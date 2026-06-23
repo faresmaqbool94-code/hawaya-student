@@ -99,7 +99,7 @@
   }
   .install-btn:active{transform:translateY(1px) scale(.99);}
 
-  /* نافذة شرح التثبيت على آيفون */
+  /* نوافذ شرح التثبيت (آيفون / عام) */
   .ios-install-overlay{
     position:fixed;inset:0;background:rgba(43,38,64,.55);
     display:flex;align-items:center;justify-content:center;
@@ -129,14 +129,15 @@
   /* ===================== التطبيق الرئيسي ===================== */
   #appView{min-height:100vh;display:flex;flex-direction:column;}
 
-  .brand-strip{display:flex;justify-content:center;padding:12px 0 4px;}
-  .brand-logo{height:32px;width:auto;}
-
   .app-header{
-    display:flex;align-items:center;gap:12px;padding:14px 18px 16px;
+    padding:14px 18px 16px;
     background:linear-gradient(95deg, var(--indigo), var(--violet));color:#fff;
     border-radius:0 0 28px 28px;box-shadow:0 10px 30px -14px rgba(53,40,104,.5);
   }
+  .header-top-row{text-align:right;margin-bottom:10px;}
+  .header-logo{height:46px;width:auto;display:inline-block;}
+
+  .header-main-row{display:flex;align-items:center;gap:12px;}
   .header-avatar{
     width:54px;height:54px;border-radius:14px;flex-shrink:0;background-size:cover;background-position:center;
     background-color:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:1.5rem;
@@ -182,7 +183,7 @@
   .quick-tile .ic{font-size:1.6rem;display:block;margin-bottom:6px;}
   .quick-tile .tt{font-weight:800;color:var(--indigo);font-size:.86rem;display:block;}
 
-  /* قائمة أعلى 10 طلاب */
+  /* قائمة العشرة الأوائل */
   .leaderboard-scroll{
     display:flex;gap:12px;overflow-x:auto;padding:6px 2px 10px;
     scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;
@@ -288,7 +289,7 @@
   </div>
 </div>
 
-<!-- نافذة شرح التثبيت على آيفون (متاحة بأي وقت بعد الدخول) -->
+<!-- نافذة شرح التثبيت على آيفون -->
 <div id="iosInstallOverlay" class="ios-install-overlay hidden">
   <div class="ios-install-card">
     <h3>📱 تثبيت التطبيق على آيفون</h3>
@@ -299,19 +300,30 @@
   </div>
 </div>
 
+<!-- نافذة شرح التثبيت العامة (أندرويد/متصفحات أخرى لو لم يدعم التثبيت التلقائي) -->
+<div id="genericInstallOverlay" class="ios-install-overlay hidden">
+  <div class="ios-install-card">
+    <h3>📲 تثبيت التطبيق</h3>
+    <p><span class="ios-step-num">1</span> اضغط على أيقونة القائمة <b>⋮</b> بأعلى يمين المتصفح</p>
+    <p><span class="ios-step-num">2</span> اختر <b>"تثبيت التطبيق"</b> أو <b>"إضافة إلى الشاشة الرئيسية"</b></p>
+    <button type="button" id="closeGenericHint" class="btn-secondary">حسنًا، فهمت</button>
+  </div>
+</div>
+
 <!-- ===================== التطبيق ===================== -->
 <div id="appView" class="hidden">
-  <div class="brand-strip"><img class="app-logo brand-logo" alt="هواية الصيفي"></div>
-
   <div class="app-header">
-    <div id="headerAvatar" class="header-avatar">🧒</div>
-    <div class="header-info">
-      <div class="header-name" id="headerName"></div>
-      <div class="header-stage" id="headerStage"></div>
-    </div>
-    <div class="header-stats">
-      <div class="stat-pill"><div class="num" id="headerBalance">0</div><div class="lbl">رصيدك</div></div>
-      <div class="stat-pill"><div class="num" id="headerRank">-</div><div class="lbl">مركزك</div></div>
+    <div class="header-top-row"><img class="app-logo header-logo" alt="هواية الصيفي"></div>
+    <div class="header-main-row">
+      <div id="headerAvatar" class="header-avatar">🧒</div>
+      <div class="header-info">
+        <div class="header-name" id="headerName"></div>
+        <div class="header-stage" id="headerStage"></div>
+      </div>
+      <div class="header-stats">
+        <div class="stat-pill"><div class="num" id="headerBalance">0</div><div class="lbl">رصيدك</div></div>
+        <div class="stat-pill"><div class="num" id="headerRank">-</div><div class="lbl">مركزك</div></div>
+      </div>
     </div>
   </div>
 
@@ -319,7 +331,7 @@
 
     <!-- 0) الرئيسية -->
     <div class="page-panel" data-page="0">
-      <button type="button" id="installBtn" class="install-btn hidden">📲 تثبيت التطبيق على جوالك</button>
+      <button type="button" id="installBtn" class="install-btn">📲 تثبيت التطبيق على جوالك</button>
       <div class="home-hero">
         <div class="sun">☀️</div>
         <h2 id="homeWelcome">أهلًا بك!</h2>
@@ -327,8 +339,7 @@
       </div>
 
       <div class="section-card">
-        <div class="section-title">🏆 أعلى 10 طلاب</div>
-        <div class="section-sub">الترتيب يعتمد على الرصيد — مرر بإصبعك لرؤية باقي المراكز</div>
+        <div class="section-title">🔥 العشرة الأوائل</div>
         <div id="leaderboardScroll" class="leaderboard-scroll"></div>
       </div>
 
@@ -404,8 +415,11 @@
   /* =========================================================================
      مهم جدًا قبل النشر:
      1) APPS_SCRIPT_URL -> نفس رابط تطبيق المشرفين بعد إضافة studentLogin و getLeaderboard
-     2) LOGO_SRC -> ضع logo.png بجانب هذا الملف (نفس شعار تطبيق المشرفين)
+     2) LOGO_SRC -> ضع logo.png بجانب هذا الملف (نفس شعار تطبيق المشرفين، خلفية شفافة)
      3) عدّل REWARDS و CONTACTS بالأسفل ببياناتك الفعلية (رابط واتساب/هاتف/بريد)
+     4) للتثبيت التلقائي بأندرويد (بدون الرجوع لتعليمات يدوية)، تحتاج manifest.json
+        مكتمل (icons + start_url + display:standalone) وخدمة Service Worker بسيطة على
+        نفس الموقع. بدونهم الزر يعمل دائمًا لكن يعرض تعليمات يدوية فقط.
      ========================================================================= */
   const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzVV1SDLMhie0fMAf2qfu-1wB5AmSvRl3u-T7JDm2wUzaut6I8Lo3NTMpd9P9wE706blA/exec';
   const LOGO_SRC = 'logo.png';
@@ -643,19 +657,20 @@
     location.reload();
   });
 
-  // ====== زر تثبيت التطبيق (PWA) ======
+  // ====== زر تثبيت التطبيق (PWA) — ظاهر دائمًا، يتعامل مع كل الحالات ======
   const installBtn = document.getElementById('installBtn');
   const iosInstallOverlay = document.getElementById('iosInstallOverlay');
+  const genericInstallOverlay = document.getElementById('genericInstallOverlay');
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
   const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
   let deferredInstallPrompt = null;
 
-  if (!isStandalone && isIOS) installBtn.classList.remove('hidden');
+  // الحالة الوحيدة التي نخفي فيها الزر: التطبيق مثبّت فعليًا ومفتوح كتطبيق مستقل
+  if (isStandalone) installBtn.classList.add('hidden');
 
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredInstallPrompt = e;
-    if (!isStandalone) installBtn.classList.remove('hidden');
   });
 
   installBtn.addEventListener('click', async () => {
@@ -666,11 +681,16 @@
       installBtn.classList.add('hidden');
     } else if (isIOS) {
       iosInstallOverlay.classList.remove('hidden');
+    } else {
+      genericInstallOverlay.classList.remove('hidden');
     }
   });
 
   document.getElementById('closeIosHint').addEventListener('click', () => {
     iosInstallOverlay.classList.add('hidden');
+  });
+  document.getElementById('closeGenericHint').addEventListener('click', () => {
+    genericInstallOverlay.classList.add('hidden');
   });
 
   // ====== نموذج تسجيل الدخول اليدوي ======
