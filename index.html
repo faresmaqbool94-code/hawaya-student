@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>هواية الصيفي - الطالب</title>
-<link rel="icon" type="image/png" href="logo.png">
-<link rel="apple-touch-icon" href="logo.png">
+<link rel="icon" type="image/png" href="icon-512.png">
+<link rel="apple-touch-icon" href="icon-180.png">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#352868">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -129,31 +129,18 @@
   /* ===================== التطبيق الرئيسي ===================== */
   #appView{min-height:100vh;display:flex;flex-direction:column;}
 
+  /* الشريط العلوي: الشعار فقط */
   .app-header{
-    padding:14px 18px 16px;
-    background:linear-gradient(95deg, var(--indigo), var(--violet));color:#fff;
+    padding:14px 18px;text-align:right;
+    background:linear-gradient(95deg, var(--indigo), var(--violet));
     border-radius:0 0 28px 28px;box-shadow:0 10px 30px -14px rgba(53,40,104,.5);
   }
-  .header-top-row{text-align:right;margin-bottom:10px;}
-  .header-logo{height:46px;width:auto;display:inline-block;}
-
-  .header-main-row{display:flex;align-items:center;gap:12px;}
-  .header-avatar{
-    width:54px;height:54px;border-radius:14px;flex-shrink:0;background-size:cover;background-position:center;
-    background-color:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:1.5rem;
-    border:2px solid rgba(255,255,255,.5);
-  }
-  .header-info{flex:1;min-width:0;}
-  .header-name{font-family:'Almarai', sans-serif;font-weight:800;font-size:1.05rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .header-stage{font-size:.78rem;opacity:.85;margin-top:2px;}
-  .header-stats{flex-shrink:0;display:flex;gap:6px;}
-  .stat-pill{background:rgba(255,255,255,.16);border-radius:12px;padding:6px 11px;text-align:center;min-width:54px;}
-  .stat-pill .num{font-family:'Baloo Bhaijaan 2', sans-serif;font-weight:800;font-size:.95rem;line-height:1;}
-  .stat-pill .lbl{font-size:.6rem;opacity:.85;margin-top:2px;}
+  .header-logo{height:50px;width:auto;display:inline-block;}
 
   .pages-viewport{flex:1;position:relative;overflow:hidden;padding-bottom:var(--nav-h);}
   .page-panel{
-    position:absolute;inset:0;overflow-y:auto;padding:18px 16px 28px;
+    position:absolute;inset:0;overflow-y:auto;padding:18px 16px 42px;
+    -webkit-overflow-scrolling:touch;overscroll-behavior-y:auto;
     transform:translateX(100%);transition:transform .4s cubic-bezier(.22,.61,.36,1);display:none;
   }
   .page-panel[data-page="0"]{display:block;transform:translateX(0);}
@@ -174,14 +161,22 @@
   .home-hero .sun{font-size:1.8rem;margin-bottom:6px;}
   .home-hero h2{font-family:'Baloo Bhaijaan 2', sans-serif;font-weight:700;font-size:1.3rem;margin:0 0 4px;}
   .home-hero p{font-size:.88rem;opacity:.9;margin:0;}
-  .quick-tiles{display:flex;gap:12px;margin-bottom:16px;}
-  .quick-tile{
-    flex:1;background:var(--card);border-radius:18px;padding:16px 12px;text-align:center;
-    box-shadow:0 10px 26px -14px rgba(53,40,104,.18);cursor:pointer;border:none;
-    font-family:'Almarai', sans-serif;
+
+  /* بطاقة بيانات الطالب — صندوق مستقل تحت مربع الترحيب */
+  .student-card{padding:18px 20px;}
+  .student-row{display:flex;align-items:center;gap:12px;}
+  .header-avatar{
+    width:54px;height:54px;border-radius:14px;flex-shrink:0;background-size:cover;background-position:center;
+    background-color:#F3F0FA;display:flex;align-items:center;justify-content:center;font-size:1.5rem;
+    border:2px solid #E7E2F2;
   }
-  .quick-tile .ic{font-size:1.6rem;display:block;margin-bottom:6px;}
-  .quick-tile .tt{font-weight:800;color:var(--indigo);font-size:.86rem;display:block;}
+  .header-info{flex:1;min-width:0;}
+  .header-name{font-weight:800;font-size:1.05rem;color:var(--indigo);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .header-stage{font-size:.8rem;color:var(--text-muted);margin-top:2px;}
+  .header-stats{flex-shrink:0;display:flex;gap:6px;}
+  .stat-pill{background:#F3F0FA;border-radius:12px;padding:6px 11px;text-align:center;min-width:54px;}
+  .stat-pill .num{font-family:'Baloo Bhaijaan 2', sans-serif;font-weight:800;font-size:.95rem;color:var(--indigo);line-height:1;}
+  .stat-pill .lbl{font-size:.6rem;color:var(--text-muted);margin-top:2px;}
 
   /* قائمة العشرة الأوائل */
   .leaderboard-scroll{
@@ -276,7 +271,7 @@
 <!-- ===================== شاشة تسجيل الدخول ===================== -->
 <div id="loginView" class="hidden">
   <div class="login-card">
-    <img class="logo app-logo" alt="هواية الصيفي">
+    <img class="logo app-logo" alt="هواية">
     <div class="welcome-pill">أهلًا بك في هواية الصيفي ☀️</div>
     <h1>تسجيل الدخول</h1>
     <p class="subtitle">أدخل رقمك وكلمة السر من بطاقتك</p>
@@ -313,18 +308,7 @@
 <!-- ===================== التطبيق ===================== -->
 <div id="appView" class="hidden">
   <div class="app-header">
-    <div class="header-top-row"><img class="app-logo header-logo" alt="هواية الصيفي"></div>
-    <div class="header-main-row">
-      <div id="headerAvatar" class="header-avatar">🧒</div>
-      <div class="header-info">
-        <div class="header-name" id="headerName"></div>
-        <div class="header-stage" id="headerStage"></div>
-      </div>
-      <div class="header-stats">
-        <div class="stat-pill"><div class="num" id="headerBalance">0</div><div class="lbl">رصيدك</div></div>
-        <div class="stat-pill"><div class="num" id="headerRank">-</div><div class="lbl">مركزك</div></div>
-      </div>
-    </div>
+    <img class="app-logo header-logo" alt="هواية">
   </div>
 
   <div class="pages-viewport" id="pagesViewport">
@@ -332,10 +316,25 @@
     <!-- 0) الرئيسية -->
     <div class="page-panel" data-page="0">
       <button type="button" id="installBtn" class="install-btn">📲 تثبيت التطبيق على جوالك</button>
+
       <div class="home-hero">
         <div class="sun">☀️</div>
         <h2 id="homeWelcome">أهلًا بك!</h2>
         <p>نتمنى لك صيفًا حافلًا بالأنشطة والجوائز مع هواية الصيفي</p>
+      </div>
+
+      <div class="section-card student-card">
+        <div class="student-row">
+          <div id="headerAvatar" class="header-avatar">🧒</div>
+          <div class="header-info">
+            <div class="header-name" id="headerName"></div>
+            <div class="header-stage" id="headerStage"></div>
+          </div>
+          <div class="header-stats">
+            <div class="stat-pill"><div class="num" id="headerBalance">0</div><div class="lbl">رصيدك</div></div>
+            <div class="stat-pill"><div class="num" id="headerRank">-</div><div class="lbl">مركزك</div></div>
+          </div>
+        </div>
       </div>
 
       <div class="section-card">
@@ -343,20 +342,6 @@
         <div id="leaderboardScroll" class="leaderboard-scroll"></div>
       </div>
 
-      <div class="quick-tiles">
-        <button class="quick-tile" data-goto="2">
-          <span class="ic">💰</span>
-          <span class="tt">رصيدي</span>
-        </button>
-        <button class="quick-tile" data-goto="1">
-          <span class="ic">🎁</span>
-          <span class="tt">الجوائز</span>
-        </button>
-        <button class="quick-tile" data-goto="3">
-          <span class="ic">📣</span>
-          <span class="tt">تابعنا</span>
-        </button>
-      </div>
       <div class="section-card">
         <div class="section-title">نصيحة اليوم</div>
         <div class="section-sub">حافظ على حضورك اليومي عشان يزيد رصيدك وتقدر تستبدله بجوائز حلوة آخر الصيف 🌟</div>
@@ -415,11 +400,9 @@
   /* =========================================================================
      مهم جدًا قبل النشر:
      1) APPS_SCRIPT_URL -> نفس رابط تطبيق المشرفين بعد إضافة studentLogin و getLeaderboard
-     2) LOGO_SRC -> ضع logo.png بجانب هذا الملف (نفس شعار تطبيق المشرفين، خلفية شفافة)
+     2) LOGO_SRC -> ضع logo.png بجانب هذا الملف (الشعار الجديد، خلفية شفافة، اسمه logo.png بالضبط)
      3) عدّل REWARDS و CONTACTS بالأسفل ببياناتك الفعلية (رابط واتساب/هاتف/بريد)
-     4) للتثبيت التلقائي بأندرويد (بدون الرجوع لتعليمات يدوية)، تحتاج manifest.json
-        مكتمل (icons + start_url + display:standalone) وخدمة Service Worker بسيطة على
-        نفس الموقع. بدونهم الزر يعمل دائمًا لكن يعرض تعليمات يدوية فقط.
+     4) للتثبيت التلقائي بأندرويد، تأكد من رفع manifest.json و sw.js بجانب هذا الملف
      ========================================================================= */
   const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzVV1SDLMhie0fMAf2qfu-1wB5AmSvRl3u-T7JDm2wUzaut6I8Lo3NTMpd9P9wE706blA/exec';
   const LOGO_SRC = 'logo.png';
@@ -634,9 +617,6 @@
 
   navButtons.forEach((btn) => {
     btn.addEventListener('click', () => goToPage(Number(btn.dataset.index)));
-  });
-  document.querySelectorAll('[data-goto]').forEach((el) => {
-    el.addEventListener('click', () => goToPage(Number(el.dataset.goto)));
   });
 
   // ====== تحديث الرصيد والمركز يدويًا ======
