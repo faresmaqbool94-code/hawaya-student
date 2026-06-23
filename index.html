@@ -427,6 +427,13 @@
 
   document.querySelectorAll('.app-logo').forEach((img) => { img.src = LOGO_SRC; });
 
+  // تسجيل Service Worker — شرط أساسي ليعرض المتصفح زر التثبيت التلقائي (PWA)
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    });
+  }
+
   // ====== بيانات ثابتة (placeholder) — عدّلها كما تحب ======
   const REWARDS = [
     { emoji: '🎮', name: 'بطاقة ألعاب', desc: 'بطاقة شحن إلكترونية', points: '500 نقطة' },
