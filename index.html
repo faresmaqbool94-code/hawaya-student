@@ -321,7 +321,7 @@
 
       <div class="section-card">
         <div class="section-title">نصيحة اليوم</div>
-        <div class="section-sub">حافظ على حضورك اليومي عشان يزيد رصيدك وتقدر تستبدله بجوائز حلوة آخر الصيف 🌟</div>
+        <div class="section-sub" id="dailyTipText">جاري التحميل...</div>
       </div>
     </div>
 
@@ -395,13 +395,7 @@
     });
   }
 
-  // ====== بيانات ثابتة (placeholder) — عدّلها كما تحب ======
-  const REWARDS = [
-    { emoji: '🎮', name: 'بطاقة ألعاب', desc: 'بطاقة شحن إلكترونية', points: '500 نقطة' },
-    { emoji: '🍕', name: 'وجبة بيتزا', desc: 'وجبة من مطعم مشارك', points: '300 نقطة' },
-    { emoji: '🧸', name: 'هدية رمزية', desc: 'هدية تذكارية من هواية الصيفي', points: '150 نقطة' },
-    { emoji: '🏆', name: 'شهادة تقدير', desc: 'شهادة طالب متميز', points: '100 نقطة' }
-  ];
+  // ====== بيانات تواصل ثابتة (placeholder) — عدّلها كما تحب ======
   const CONTACTS = [
     { icon: '👻', title: 'سناب هواية', value: 'تابع يومياتنا في سناب هواية', href: 'https://www.snapchat.com/add/tawnie.raka38?share_id=aAy5gENBzsI&locale=en-GB' },
     { icon: '📱', title: 'واتساب', value: '05XXXXXXXX', href: 'https://wa.me/9665XXXXXXXX' },
@@ -409,18 +403,44 @@
     { icon: '✉️', title: 'البريد الإلكتروني', value: 'info@example.com', href: 'mailto:info@example.com' }
   ];
 
-  function renderRewards() {
+  // ====== الجوائز — تُحمّل من الخادم مباشرة (تطبيق المشرفين هو اللي يديرها) ======
+  function renderRewards(rewards) {
     const wrap = document.getElementById('rewardsList');
-    wrap.innerHTML = REWARDS.map(r => `
+    if (!rewards || !rewards.length) {
+      wrap.innerHTML = '<p class="lb-empty">لا توجد جوائز متاحة حاليًا</p>';
+      return;
+    }
+    wrap.innerHTML = rewards.map(r => `
       <div class="reward-item">
-        <div class="reward-emoji">${r.emoji}</div>
+        <div class="reward-emoji" style="${r.imageUrl ? `background-image:url('${r.imageUrl}');background-size:cover;background-position:center;` : ''}">${r.imageUrl ? '' : '🎁'}</div>
         <div style="flex:1;min-width:0;">
           <div class="reward-name">${r.name}</div>
-          <div class="reward-desc">${r.desc}</div>
         </div>
-        <div class="reward-points">${r.points}</div>
+        <div class="reward-points">${r.price} نقطة</div>
       </div>
     `).join('');
+  }
+
+  async function loadRewards() {
+    const wrap = document.getElementById('rewardsList');
+    wrap.innerHTML = '<p class="lb-empty">جاري التحميل...</p>';
+    try {
+      const data = await callAppsScript({ action: 'getRewards' });
+      renderRewards(data.success ? data.rewards : []);
+    } catch (_) {
+      wrap.innerHTML = '<p class="lb-empty">تعذر تحميل الجوائز</p>';
+    }
+  }
+
+  // ====== نصيحة اليوم — تُحمّل من الخادم وتتدور تلقائيًا حسب التاريخ ======
+  async function loadDailyTip() {
+    const el = document.getElementById('dailyTipText');
+    try {
+      const data = await callAppsScript({ action: 'getDailyTip' });
+      el.textContent = (data.success && data.tip) ? data.tip : 'حافظ على حضورك اليومي وتابع جديدنا 🌟';
+    } catch (_) {
+      el.textContent = 'حافظ على حضورك اليومي وتابع جديدنا 🌟';
+    }
   }
 
   function renderContacts() {
@@ -514,6 +534,8 @@
     populateStudentData(data);
     resetPagesToHome();
     loadLeaderboard();
+    loadRewards();
+    loadDailyTip();
   }
 
   function populateStudentData(data) {
@@ -685,7 +707,6 @@
 
   // ====== التحقق التلقائي عند فتح التطبيق ======
   async function init() {
-    renderRewards();
     renderContacts();
     showLoading();
 
