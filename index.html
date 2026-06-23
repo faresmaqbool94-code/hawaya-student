@@ -89,11 +89,51 @@
   button:disabled{opacity:.65;cursor:not-allowed;}
   .error{color:var(--error);font-size:.85rem;text-align:center;min-height:1.2em;margin:14px 0 0;font-weight:700;}
 
+  /* زر تثبيت التطبيق */
+  .install-btn{
+    display:block;width:fit-content;margin:0 auto 14px;
+    padding:9px 18px;border-radius:999px;border:none;
+    background:#F3F0FA;color:var(--indigo);
+    font-family:'Almarai', sans-serif;font-weight:700;font-size:.82rem;
+    box-shadow:none;cursor:pointer;
+  }
+  .install-btn:active{transform:translateY(1px) scale(.99);}
+
+  /* نافذة شرح التثبيت على آيفون */
+  .ios-install-overlay{
+    position:fixed;inset:0;background:rgba(43,38,64,.55);
+    display:flex;align-items:center;justify-content:center;
+    padding:20px;z-index:60;
+  }
+  .ios-install-card{
+    background:#fff;border-radius:20px;padding:24px 20px;max-width:340px;width:100%;
+    box-shadow:0 18px 50px -12px rgba(53,40,104,.35);
+  }
+  .ios-install-card h3{
+    font-family:'Baloo Bhaijaan 2', sans-serif;font-size:1.1rem;color:var(--indigo);
+    text-align:center;margin:0 0 16px;
+  }
+  .ios-install-card p{
+    font-size:.92rem;color:var(--text);margin:0 0 12px;line-height:1.6;
+    display:flex;align-items:flex-start;gap:8px;
+  }
+  .ios-step-num{
+    flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;
+    width:22px;height:22px;border-radius:50%;
+    background:var(--violet);color:#fff;font-size:.75rem;font-weight:700;
+  }
+  .ios-share-icon{font-size:1rem;}
+  .ios-install-card button{margin-top:8px;}
+  .btn-secondary{background:#F3F0FA;color:var(--indigo);box-shadow:none;margin-top:10px;}
+
   /* ===================== التطبيق الرئيسي ===================== */
   #appView{min-height:100vh;display:flex;flex-direction:column;}
 
+  .brand-strip{display:flex;justify-content:center;padding:12px 0 4px;}
+  .brand-logo{height:32px;width:auto;}
+
   .app-header{
-    display:flex;align-items:center;gap:12px;padding:16px 18px 14px;
+    display:flex;align-items:center;gap:12px;padding:14px 18px 16px;
     background:linear-gradient(95deg, var(--indigo), var(--violet));color:#fff;
     border-radius:0 0 28px 28px;box-shadow:0 10px 30px -14px rgba(53,40,104,.5);
   }
@@ -105,20 +145,17 @@
   .header-info{flex:1;min-width:0;}
   .header-name{font-family:'Almarai', sans-serif;font-weight:800;font-size:1.05rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .header-stage{font-size:.78rem;opacity:.85;margin-top:2px;}
-  .header-balance{
-    flex-shrink:0;text-align:center;background:rgba(255,255,255,.16);border-radius:14px;padding:6px 12px;
-  }
-  .header-balance .num{font-family:'Baloo Bhaijaan 2', sans-serif;font-weight:800;font-size:1.05rem;line-height:1;}
-  .header-balance .lbl{font-size:.62rem;opacity:.85;}
+  .header-stats{flex-shrink:0;display:flex;gap:6px;}
+  .stat-pill{background:rgba(255,255,255,.16);border-radius:12px;padding:6px 11px;text-align:center;min-width:54px;}
+  .stat-pill .num{font-family:'Baloo Bhaijaan 2', sans-serif;font-weight:800;font-size:.95rem;line-height:1;}
+  .stat-pill .lbl{font-size:.6rem;opacity:.85;margin-top:2px;}
 
-  .pages-viewport{flex:1;overflow:hidden;padding-bottom:var(--nav-h);}
-  .pages-track{
-    display:flex;direction:ltr;height:100%;
-    transition:transform .4s cubic-bezier(.22,.61,.36,1);
-  }
+  .pages-viewport{flex:1;position:relative;overflow:hidden;padding-bottom:var(--nav-h);}
   .page-panel{
-    flex:0 0 100%;width:100%;direction:rtl;overflow-y:auto;padding:18px 16px 28px;
+    position:absolute;inset:0;overflow-y:auto;padding:18px 16px 28px;
+    transform:translateX(100%);transition:transform .4s cubic-bezier(.22,.61,.36,1);display:none;
   }
+  .page-panel[data-page="0"]{display:block;transform:translateX(0);}
 
   .section-card{
     background:var(--card);border-radius:var(--radius);padding:22px 20px;
@@ -144,6 +181,30 @@
   }
   .quick-tile .ic{font-size:1.6rem;display:block;margin-bottom:6px;}
   .quick-tile .tt{font-weight:800;color:var(--indigo);font-size:.86rem;display:block;}
+
+  /* قائمة أعلى 10 طلاب */
+  .leaderboard-scroll{
+    display:flex;gap:12px;overflow-x:auto;padding:6px 2px 10px;
+    scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;
+  }
+  .leaderboard-scroll::-webkit-scrollbar{height:0;}
+  .leader-card{
+    flex:0 0 84px;scroll-snap-align:start;text-align:center;
+    background:#FBFAFD;border:2px solid #EFEAF8;border-radius:16px;padding:10px 6px;
+  }
+  .leader-rank{
+    font-family:'Baloo Bhaijaan 2', sans-serif;font-weight:800;font-size:.74rem;color:#fff;
+    background:linear-gradient(95deg, var(--blue), var(--violet));border-radius:999px;
+    display:inline-block;padding:2px 9px;margin-bottom:6px;
+  }
+  .leader-rank.top1{background:linear-gradient(95deg, var(--sun), #FFD976);color:#5A4300;}
+  .leader-photo{
+    width:50px;height:50px;border-radius:12px;margin:0 auto 6px;background-size:cover;background-position:center;
+    background-color:#EFEAF8;display:flex;align-items:center;justify-content:center;font-size:1.2rem;border:2px solid #fff;
+  }
+  .leader-name{font-size:.72rem;font-weight:800;color:var(--indigo);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .leader-stage{font-size:.64rem;color:var(--text-muted);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;}
+  .lb-empty{color:var(--text-muted);font-size:.82rem;padding:6px 2px;}
 
   /* الجوائز */
   .reward-item{
@@ -173,7 +234,7 @@
   .info-row .k{color:var(--text-muted);font-size:.86rem;}
   .info-row .v{font-weight:800;color:var(--indigo);font-size:.92rem;}
 
-  /* التواصل */
+  /* تابعنا */
   .contact-item{
     display:flex;align-items:center;gap:14px;padding:14px;border-radius:18px;
     background:#FBFAFD;border:2px solid #EFEAF8;margin-bottom:12px;text-decoration:none;color:inherit;
@@ -227,104 +288,124 @@
   </div>
 </div>
 
+<!-- نافذة شرح التثبيت على آيفون (متاحة بأي وقت بعد الدخول) -->
+<div id="iosInstallOverlay" class="ios-install-overlay hidden">
+  <div class="ios-install-card">
+    <h3>📱 تثبيت التطبيق على آيفون</h3>
+    <p><span class="ios-step-num">1</span> اضغط زر المشاركة <span class="ios-share-icon">⬆️</span> بالأسفل بمتصفح Safari</p>
+    <p><span class="ios-step-num">2</span> دوّر لتحت واختر <b>"إضافة إلى الشاشة الرئيسية"</b></p>
+    <p><span class="ios-step-num">3</span> اضغط <b>"إضافة"</b> فوق يمين الشاشة</p>
+    <button type="button" id="closeIosHint" class="btn-secondary">حسنًا، فهمت</button>
+  </div>
+</div>
+
 <!-- ===================== التطبيق ===================== -->
 <div id="appView" class="hidden">
+  <div class="brand-strip"><img class="app-logo brand-logo" alt="هواية الصيفي"></div>
+
   <div class="app-header">
     <div id="headerAvatar" class="header-avatar">🧒</div>
     <div class="header-info">
       <div class="header-name" id="headerName"></div>
       <div class="header-stage" id="headerStage"></div>
     </div>
-    <div class="header-balance">
-      <div class="num" id="headerBalance">0</div>
-      <div class="lbl">رصيدك</div>
+    <div class="header-stats">
+      <div class="stat-pill"><div class="num" id="headerBalance">0</div><div class="lbl">رصيدك</div></div>
+      <div class="stat-pill"><div class="num" id="headerRank">-</div><div class="lbl">مركزك</div></div>
     </div>
   </div>
 
-  <div class="pages-viewport">
-    <div class="pages-track" id="pagesTrack">
+  <div class="pages-viewport" id="pagesViewport">
 
-      <!-- 1) الرئيسية -->
-      <div class="page-panel">
-        <div class="home-hero">
-          <div class="sun">☀️</div>
-          <h2 id="homeWelcome">أهلًا بك!</h2>
-          <p>نتمنى لك صيفًا حافلًا بالأنشطة والجوائز مع هواية الصيفي</p>
-        </div>
-        <div class="quick-tiles">
-          <button class="quick-tile" data-goto="2">
-            <span class="ic">💰</span>
-            <span class="tt">رصيدي</span>
-          </button>
-          <button class="quick-tile" data-goto="1">
-            <span class="ic">🎁</span>
-            <span class="tt">الجوائز</span>
-          </button>
-          <button class="quick-tile" data-goto="3">
-            <span class="ic">📞</span>
-            <span class="tt">تواصل معنا</span>
-          </button>
-        </div>
-        <div class="section-card">
-          <div class="section-title">نصيحة اليوم</div>
-          <div class="section-sub">حافظ على حضورك اليومي عشان يزيد رصيدك وتقدر تستبدله بجوائز حلوة آخر الصيف 🌟</div>
-        </div>
+    <!-- 0) الرئيسية -->
+    <div class="page-panel" data-page="0">
+      <button type="button" id="installBtn" class="install-btn hidden">📲 تثبيت التطبيق على جوالك</button>
+      <div class="home-hero">
+        <div class="sun">☀️</div>
+        <h2 id="homeWelcome">أهلًا بك!</h2>
+        <p>نتمنى لك صيفًا حافلًا بالأنشطة والجوائز مع هواية الصيفي</p>
       </div>
 
-      <!-- 2) الجوائز -->
-      <div class="page-panel">
-        <div class="section-card">
-          <div class="section-title">🎁 الجوائز المتاحة</div>
-          <div class="section-sub">اجمع رصيدك من الحضور والأنشطة، واستبدله مع المشرف مباشرة</div>
-          <div id="rewardsList"></div>
-        </div>
+      <div class="section-card">
+        <div class="section-title">🏆 أعلى 10 طلاب</div>
+        <div class="section-sub">الترتيب يعتمد على الرصيد — مرر بإصبعك لرؤية باقي المراكز</div>
+        <div id="leaderboardScroll" class="leaderboard-scroll"></div>
       </div>
 
-      <!-- 3) المعلومات / الرصيد -->
-      <div class="page-panel">
-        <div class="section-card">
-          <div class="section-title">💰 رصيدي</div>
-          <div class="balance-box">
-            <div class="balance-num" id="infoBalance">0</div>
-            <div class="balance-lbl">نقطة</div>
-          </div>
-          <button type="button" class="refresh-btn" id="refreshBalanceBtn">🔄 تحديث الرصيد</button>
-        </div>
-        <div class="section-card">
-          <div class="section-title">بياناتي</div>
-          <div class="info-row"><span class="k">الاسم</span><span class="v" id="infoName"></span></div>
-          <div class="info-row"><span class="k">المرحلة الدراسية</span><span class="v" id="infoStage"></span></div>
-          <div class="info-row"><span class="k">رقم الطالب</span><span class="v" id="infoId"></span></div>
-        </div>
+      <div class="quick-tiles">
+        <button class="quick-tile" data-goto="2">
+          <span class="ic">💰</span>
+          <span class="tt">رصيدي</span>
+        </button>
+        <button class="quick-tile" data-goto="1">
+          <span class="ic">🎁</span>
+          <span class="tt">الجوائز</span>
+        </button>
+        <button class="quick-tile" data-goto="3">
+          <span class="ic">📣</span>
+          <span class="tt">تابعنا</span>
+        </button>
       </div>
-
-      <!-- 4) التواصل -->
-      <div class="page-panel">
-        <div class="section-card">
-          <div class="section-title">📞 تواصل معنا</div>
-          <div class="section-sub">لأي استفسار أو ملاحظة، تواصل معنا عبر الوسائل التالية</div>
-          <div id="contactList"></div>
-          <button type="button" class="logout-btn" id="logoutBtn">🚪 تسجيل الخروج</button>
-        </div>
+      <div class="section-card">
+        <div class="section-title">نصيحة اليوم</div>
+        <div class="section-sub">حافظ على حضورك اليومي عشان يزيد رصيدك وتقدر تستبدله بجوائز حلوة آخر الصيف 🌟</div>
       </div>
-
     </div>
+
+    <!-- 1) الجوائز -->
+    <div class="page-panel" data-page="1">
+      <div class="section-card">
+        <div class="section-title">🎁 الجوائز المتاحة</div>
+        <div class="section-sub">اجمع رصيدك من الحضور والأنشطة، واستبدله مع المشرف مباشرة</div>
+        <div id="rewardsList"></div>
+      </div>
+    </div>
+
+    <!-- 2) المعلومات / الرصيد -->
+    <div class="page-panel" data-page="2">
+      <div class="section-card">
+        <div class="section-title">💰 رصيدي</div>
+        <div class="balance-box">
+          <div class="balance-num" id="infoBalance">0</div>
+          <div class="balance-lbl">نقطة</div>
+        </div>
+        <button type="button" class="refresh-btn" id="refreshBalanceBtn">🔄 تحديث الرصيد</button>
+      </div>
+      <div class="section-card">
+        <div class="section-title">بياناتي</div>
+        <div class="info-row"><span class="k">الاسم</span><span class="v" id="infoName"></span></div>
+        <div class="info-row"><span class="k">المرحلة الدراسية</span><span class="v" id="infoStage"></span></div>
+        <div class="info-row"><span class="k">رقم الطالب</span><span class="v" id="infoId"></span></div>
+        <div class="info-row"><span class="k">مركزك بين الطلاب</span><span class="v" id="infoRank"></span></div>
+      </div>
+    </div>
+
+    <!-- 3) تابعنا -->
+    <div class="page-panel" data-page="3">
+      <div class="section-card">
+        <div class="section-title">📣 تابعنا</div>
+        <div class="section-sub">تابع يومياتنا وتواصل معنا عبر الوسائل التالية</div>
+        <div id="contactList"></div>
+        <button type="button" class="logout-btn" id="logoutBtn">🚪 تسجيل الخروج</button>
+      </div>
+    </div>
+
   </div>
 
   <div class="bottom-nav">
     <button class="nav-btn active" data-index="0"><span class="nav-ic">🏠</span><span>الرئيسية</span></button>
     <button class="nav-btn" data-index="1"><span class="nav-ic">🎁</span><span>الجوائز</span></button>
     <button class="nav-btn" data-index="2"><span class="nav-ic">💰</span><span>المعلومات</span></button>
-    <button class="nav-btn" data-index="3"><span class="nav-ic">📞</span><span>التواصل</span></button>
+    <button class="nav-btn" data-index="3"><span class="nav-ic">📣</span><span>تابعنا</span></button>
   </div>
 </div>
 
 <script>
   /* =========================================================================
      مهم جدًا قبل النشر:
-     1) APPS_SCRIPT_URL -> نفس رابط تطبيق المشرفين بعد إضافة دالة studentLogin
+     1) APPS_SCRIPT_URL -> نفس رابط تطبيق المشرفين بعد إضافة studentLogin و getLeaderboard
      2) LOGO_SRC -> ضع logo.png بجانب هذا الملف (نفس شعار تطبيق المشرفين)
-     3) عدّل REWARDS و CONTACTS بالأسفل ببياناتك الفعلية
+     3) عدّل REWARDS و CONTACTS بالأسفل ببياناتك الفعلية (رابط واتساب/هاتف/بريد)
      ========================================================================= */
   const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzVV1SDLMhie0fMAf2qfu-1wB5AmSvRl3u-T7JDm2wUzaut6I8Lo3NTMpd9P9wE706blA/exec';
   const LOGO_SRC = 'logo.png';
@@ -340,6 +421,7 @@
     { emoji: '🏆', name: 'شهادة تقدير', desc: 'شهادة طالب متميز', points: '100 نقطة' }
   ];
   const CONTACTS = [
+    { icon: '👻', title: 'سناب هواية', value: 'تابع يومياتنا في سناب هواية', href: 'https://www.snapchat.com/add/tawnie.raka38?share_id=aAy5gENBzsI&locale=en-GB' },
     { icon: '📱', title: 'واتساب', value: '05XXXXXXXX', href: 'https://wa.me/9665XXXXXXXX' },
     { icon: '☎️', title: 'الهاتف', value: '05XXXXXXXX', href: 'tel:05XXXXXXXX' },
     { icon: '✉️', title: 'البريد الإلكتروني', value: 'info@example.com', href: 'mailto:info@example.com' }
@@ -370,6 +452,34 @@
         </div>
       </a>
     `).join('');
+  }
+
+  function renderLeaderboard(list) {
+    const wrap = document.getElementById('leaderboardScroll');
+    if (!list || !list.length) {
+      wrap.innerHTML = '<p class="lb-empty">لا توجد بيانات كافية بعد</p>';
+      return;
+    }
+    wrap.innerHTML = list.map((s) => `
+      <div class="leader-card">
+        <div class="leader-rank ${s.rank === 1 ? 'top1' : ''}">#${s.rank}</div>
+        <div class="leader-photo" style="${s.imageUrl ? `background-image:url('${s.imageUrl}')` : ''}">${s.imageUrl ? '' : '🧒'}</div>
+        <div class="leader-name">${s.name || ''}</div>
+        <div class="leader-stage">${s.stage || ''}</div>
+      </div>
+    `).join('');
+  }
+
+  async function loadLeaderboard() {
+    const wrap = document.getElementById('leaderboardScroll');
+    wrap.innerHTML = '<p class="lb-empty">جاري التحميل...</p>';
+    try {
+      const data = await callAppsScript({ action: 'getLeaderboard' });
+      if (!data.success) { wrap.innerHTML = '<p class="lb-empty">تعذر تحميل الترتيب</p>'; return; }
+      renderLeaderboard(data.leaderboard);
+    } catch (_) {
+      wrap.innerHTML = '<p class="lb-empty">تعذر تحميل الترتيب</p>';
+    }
   }
 
   // ====== استدعاء الخادم ======
@@ -420,17 +530,23 @@
     loginView.classList.add('hidden');
     appView.classList.remove('hidden');
     populateStudentData(data);
+    resetPagesToHome();
+    loadLeaderboard();
   }
 
   function populateStudentData(data) {
     document.getElementById('headerName').textContent = data.name;
     document.getElementById('headerStage').textContent = data.stage;
     document.getElementById('headerBalance').textContent = data.balance;
+    document.getElementById('headerRank').textContent = data.rank ? ('#' + data.rank) : '-';
     document.getElementById('homeWelcome').textContent = 'أهلًا بك، ' + data.name + ' ✨';
     document.getElementById('infoBalance').textContent = data.balance;
     document.getElementById('infoName').textContent = data.name;
     document.getElementById('infoStage').textContent = data.stage;
     document.getElementById('infoId').textContent = data.id;
+    document.getElementById('infoRank').textContent = data.rank
+      ? ('المركز ' + data.rank + (data.totalStudents ? (' من ' + data.totalStudents) : ''))
+      : 'غير متوفر بعد';
 
     const avatar = document.getElementById('headerAvatar');
     if (data.imageUrl) {
@@ -442,17 +558,57 @@
     }
   }
 
-  // ====== القائمة السفلية والانزلاق بين الصفحات ======
-  const pagesTrack = document.getElementById('pagesTrack');
+  // ====== التنقل بين الصفحات: الانزلاق يكون بنفس جهة الأيقونة المضغوطة ======
+  const panels = Array.from(document.querySelectorAll('.page-panel'));
   const navButtons = document.querySelectorAll('.nav-btn');
   let currentIndex = 0;
 
-  function goToPage(index) {
-    currentIndex = index;
-    pagesTrack.style.transform = 'translateX(-' + (index * 100) + '%)';
-    navButtons.forEach((btn) => {
-      btn.classList.toggle('active', Number(btn.dataset.index) === index);
+  // ترتيب الأيقونات بالقائمة السفلية من اليمين لليسار (نفس ترتيب DOM بصفحة RTL):
+  // 0=الرئيسية (أقصى اليمين) ... 3=تابعنا (أقصى اليسار)
+  // فهرس أكبر = الأيقونة لجهة اليسار، فهرس أصغر = الأيقونة لجهة اليمين
+  function goToPage(newIndex) {
+    if (newIndex === currentIndex || !panels[newIndex]) return;
+
+    const oldPanel = panels[currentIndex];
+    const newPanel = panels[newIndex];
+    const targetIsToTheLeft = newIndex > currentIndex; // الأيقونة المضغوطة تقع يسار الحالية
+
+    const enterFrom = targetIsToTheLeft ? '-100%' : '100%'; // تدخل من نفس جهة الأيقونة
+    const exitTo = targetIsToTheLeft ? '100%' : '-100%';    // القديمة تخرج للجهة المعاكسة
+
+    newPanel.style.transition = 'none';
+    newPanel.style.transform = 'translateX(' + enterFrom + ')';
+    newPanel.style.display = 'block';
+    newPanel.getBoundingClientRect(); // فرض إعادة رسم قبل تفعيل الانتقال
+    newPanel.style.transition = '';
+
+    requestAnimationFrame(() => {
+      oldPanel.style.transform = 'translateX(' + exitTo + ')';
+      newPanel.style.transform = 'translateX(0)';
     });
+
+    const onEnd = (ev) => {
+      if (ev.propertyName !== 'transform') return;
+      oldPanel.style.display = 'none';
+      newPanel.removeEventListener('transitionend', onEnd);
+    };
+    newPanel.addEventListener('transitionend', onEnd);
+
+    currentIndex = newIndex;
+    navButtons.forEach((btn) => btn.classList.toggle('active', Number(btn.dataset.index) === newIndex));
+  }
+
+  // يُستدعى عند كل دخول جديد (تسجيل دخول/تحديث جلسة) لإعادة كل شي لحالة الصفحة الرئيسية بدون أنيميشن
+  function resetPagesToHome() {
+    panels.forEach((p, i) => {
+      p.style.transition = 'none';
+      p.style.display = i === 0 ? 'block' : 'none';
+      p.style.transform = i === 0 ? 'translateX(0)' : 'translateX(100%)';
+    });
+    panels[0].getBoundingClientRect();
+    panels.forEach((p) => { p.style.transition = ''; });
+    currentIndex = 0;
+    navButtons.forEach((btn) => btn.classList.toggle('active', Number(btn.dataset.index) === 0));
   }
 
   navButtons.forEach((btn) => {
@@ -462,7 +618,7 @@
     el.addEventListener('click', () => goToPage(Number(el.dataset.goto)));
   });
 
-  // ====== تحديث الرصيد يدويًا ======
+  // ====== تحديث الرصيد والمركز يدويًا ======
   document.getElementById('refreshBalanceBtn').addEventListener('click', async () => {
     const session = getSession();
     if (!session) return;
@@ -485,6 +641,36 @@
   document.getElementById('logoutBtn').addEventListener('click', () => {
     clearSession();
     location.reload();
+  });
+
+  // ====== زر تثبيت التطبيق (PWA) ======
+  const installBtn = document.getElementById('installBtn');
+  const iosInstallOverlay = document.getElementById('iosInstallOverlay');
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  let deferredInstallPrompt = null;
+
+  if (!isStandalone && isIOS) installBtn.classList.remove('hidden');
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    if (!isStandalone) installBtn.classList.remove('hidden');
+  });
+
+  installBtn.addEventListener('click', async () => {
+    if (deferredInstallPrompt) {
+      deferredInstallPrompt.prompt();
+      await deferredInstallPrompt.userChoice;
+      deferredInstallPrompt = null;
+      installBtn.classList.add('hidden');
+    } else if (isIOS) {
+      iosInstallOverlay.classList.remove('hidden');
+    }
+  });
+
+  document.getElementById('closeIosHint').addEventListener('click', () => {
+    iosInstallOverlay.classList.add('hidden');
   });
 
   // ====== نموذج تسجيل الدخول اليدوي ======
@@ -547,7 +733,7 @@
       }
     }
 
-    // 2) لو فيه جلسة محفوظة بالمتصفح -> تحقق منها وحدّث الرصيد
+    // 2) لو فيه جلسة محفوظة بالمتصفح -> تحقق منها وحدّث الرصيد والمركز
     const session = getSession();
     if (session && session.id && session.pw) {
       try {
