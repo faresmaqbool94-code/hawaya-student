@@ -27,6 +27,7 @@
     --text:#2B2640;
     --text-muted:#79738F;
     --error:#D1485B;
+    --success:#2E9E6C;
     --radius:22px;
     --nav-h:74px;
   }
@@ -78,6 +79,7 @@
     outline:none;transition:border-color .15s ease;
   }
   input:focus{border-color:var(--blue);}
+  input[type="checkbox"], input[type="radio"]{width:20px;height:20px;margin:0;padding:0;flex-shrink:0;accent-color:var(--violet);}
   button{
     width:100%;padding:15px;border:none;border-radius:999px;
     font-family:'Baloo Bhaijaan 2', sans-serif;font-weight:700;font-size:1.05rem;
@@ -99,7 +101,7 @@
   }
   .install-btn:active{transform:translateY(1px) scale(.99);}
 
-  /* نوافذ شرح التثبيت (آيفون / عام) */
+  /* نوافذ شرح التثبيت (آيفون / عام) ونافذة تكبير صورة الإعلان */
   .ios-install-overlay{
     position:fixed;inset:0;background:rgba(43,38,64,.55);
     display:flex;align-items:center;justify-content:center;
@@ -129,9 +131,10 @@
   /* ===================== التطبيق الرئيسي ===================== */
   #appView{min-height:100vh;display:flex;flex-direction:column;}
 
-  /* الشريط العلوي: الشعار فقط، مباشرة على خلفية الصفحة بدون صندوق/شريط لون */
-  .app-header{padding:14px 18px 6px;text-align:right;}
-  .header-logo{height:48px;width:auto;display:inline-block;}
+  /* الشريط العلوي: الشعار + ترحيب صغير بجانبه، مباشرة على خلفية الصفحة */
+  .app-header{padding:14px 18px 6px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .header-logo{height:46px;width:auto;display:inline-block;flex-shrink:0;}
+  .header-welcome{font-size:.8rem;font-weight:700;color:var(--indigo);text-align:left;}
 
   .pages-viewport{flex:1;position:relative;overflow:hidden;}
   .page-panel{
@@ -152,16 +155,6 @@
   }
   .lb-your-rank{font-family:'Almarai', sans-serif;font-weight:700;font-size:.72rem;color:var(--text-muted);}
   .section-sub{color:var(--text-muted);font-size:.86rem;margin:0 0 16px;line-height:1.6;}
-
-  /* الرئيسية */
-  .home-hero{
-    background:linear-gradient(135deg, #1A1430, var(--indigo) 45%, var(--violet) 85%, var(--pink) 120%);
-    color:#fff;border-radius:var(--radius);padding:24px 20px;margin-bottom:16px;
-    box-shadow:0 16px 40px -14px rgba(53,40,104,.4);
-  }
-  .home-hero .sun{font-size:1.8rem;margin-bottom:6px;}
-  .home-hero h2{font-family:'Baloo Bhaijaan 2', sans-serif;font-weight:700;font-size:1.3rem;margin:0 0 4px;}
-  .home-hero p{font-size:.88rem;opacity:.9;margin:0;}
 
   /* قائمة العشرة الأوائل */
   .leaderboard-scroll{
@@ -187,7 +180,7 @@
   .leader-stage{font-size:.64rem;color:var(--text-muted);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;}
   .lb-empty{color:var(--text-muted);font-size:.82rem;padding:6px 2px;}
 
-  /* الجوائز */
+  /* الإعلانات والجوائز — صف عام */
   .reward-item{
     display:flex;align-items:center;gap:14px;padding:14px;border-radius:18px;
     background:#FBFAFD;border:2px solid #EFEAF8;margin-bottom:12px;
@@ -196,11 +189,15 @@
     background:#fff;border-radius:14px;border:2px solid #EFEAF8;}
   .reward-name{font-weight:800;color:var(--indigo);font-size:.95rem;}
   .reward-desc{font-size:.8rem;color:var(--text-muted);margin-top:2px;}
-  .reward-points{
-    flex-shrink:0;background:linear-gradient(95deg, var(--sun), #FFD976);color:#5A4300;
-    font-family:'Baloo Bhaijaan 2', sans-serif;font-weight:800;font-size:.8rem;
-    padding:6px 10px;border-radius:999px;white-space:nowrap;
+
+  /* أزرار/شارات الجوائز */
+  .reward-buy-btn{
+    flex-shrink:0;width:auto;padding:9px 18px;font-size:.85rem;border-radius:999px;
+    background:linear-gradient(95deg, var(--blue), var(--violet));color:#fff;box-shadow:none;
   }
+  .reward-badge{flex-shrink:0;font-size:.72rem;font-weight:800;padding:7px 12px;border-radius:999px;white-space:nowrap;text-align:center;}
+  .reward-badge.sold-out{background:#FBE9ED;color:var(--error);}
+  .reward-badge.insufficient{background:#F3F0FA;color:var(--text-muted);}
 
   /* المعلومات / الرصيد */
   .balance-box{text-align:center;padding:10px 0 4px;}
@@ -220,6 +217,27 @@
   .info-row:last-child{border-bottom:none;}
   .info-row .k{color:var(--text-muted);font-size:.86rem;}
   .info-row .v{font-weight:800;color:var(--indigo);font-size:.92rem;}
+
+  /* نقاطي — الإنجازات */
+  .achievement-row{
+    display:flex;align-items:center;gap:10px;padding:13px;border-radius:14px;
+    background:#FBFAFD;border:2px solid #EFEAF8;margin-bottom:10px;cursor:pointer;
+  }
+  .achievement-row.done{background:#EAF7EF;border-color:#BEE6CC;cursor:default;}
+  .achievement-label{flex:1;font-weight:700;color:var(--indigo);font-size:.9rem;}
+  .achievement-points{
+    font-family:'Baloo Bhaijaan 2', sans-serif;font-weight:800;font-size:.82rem;color:#A9700A;
+    background:#FFF3DA;padding:4px 11px;border-radius:999px;flex-shrink:0;
+  }
+  .locked-box{text-align:center;padding:26px 10px;}
+  .locked-box .ic{font-size:2.2rem;margin-bottom:10px;}
+
+  /* سجل النقاط */
+  .log-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #EFEAF8;font-size:.86rem;}
+  .log-row:last-child{border-bottom:none;}
+  .log-reason{font-weight:700;color:var(--indigo);font-size:.86rem;}
+  .log-date{color:var(--text-muted);font-size:.74rem;margin-top:2px;}
+  .log-amount{font-family:'Baloo Bhaijaan 2', sans-serif;font-weight:800;flex-shrink:0;font-size:.95rem;}
 
   /* تابعنا */
   .contact-item{
@@ -242,9 +260,9 @@
   .nav-btn{
     flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
     background:none;border:none;box-shadow:none;color:var(--text-muted);width:auto;padding:8px 0;
-    font-family:'Almarai', sans-serif;font-size:.68rem;font-weight:700;cursor:pointer;border-radius:0;
+    font-family:'Almarai', sans-serif;font-size:.62rem;font-weight:700;cursor:pointer;border-radius:0;
   }
-  .nav-btn .nav-ic{font-size:1.3rem;transition:transform .2s ease;}
+  .nav-btn .nav-ic{font-size:1.25rem;transition:transform .2s ease;}
   .nav-btn.active{color:var(--indigo);}
   .nav-btn.active .nav-ic{transform:translateY(-2px);}
 
@@ -296,10 +314,16 @@
   </div>
 </div>
 
+<!-- نافذة تكبير صورة الإعلان — اضغط بأي مكان للإغلاق -->
+<div id="imageLightbox" class="ios-install-overlay hidden">
+  <img id="lightboxImg" style="max-width:100%;max-height:88vh;border-radius:16px;display:block;" src="" alt="">
+</div>
+
 <!-- ===================== التطبيق ===================== -->
 <div id="appView" class="hidden">
   <div class="app-header">
     <img class="app-logo header-logo" alt="هواية">
+    <div class="header-welcome" id="headerWelcome"></div>
   </div>
 
   <div class="pages-viewport" id="pagesViewport">
@@ -308,10 +332,9 @@
     <div class="page-panel" data-page="0">
       <button type="button" id="installBtn" class="install-btn">📲 تثبيت التطبيق على جوالك</button>
 
-      <div class="home-hero">
-        <div class="sun">☀️</div>
-        <h2 id="homeWelcome">أهلًا بك!</h2>
-        <p>نتمنى لك صيفًا حافلًا بالأنشطة والجوائز مع هواية الصيفي</p>
+      <div class="section-card">
+        <div class="section-title">📣 الإعلانات</div>
+        <div id="announcementsList"></div>
       </div>
 
       <div class="section-card">
@@ -325,22 +348,66 @@
       </div>
     </div>
 
-    <!-- 1) الجوائز -->
+    <!-- 1) نقاطي -->
     <div class="page-panel" data-page="1">
+
+      <div class="section-card" id="achievementsLockedCard" style="display:none;">
+        <div class="locked-box">
+          <div class="ic">🔒</div>
+          <div style="font-weight:800;color:var(--indigo);margin-bottom:6px;">صفحة نقاطي مقفلة الآن</div>
+          <div style="font-size:.86rem;color:var(--text-muted);" id="achievementsLockedReason"></div>
+        </div>
+      </div>
+
+      <div id="achievementsContent" style="display:none;">
+        <div class="section-card">
+          <div class="section-title">⭐ إنجازات اليوم</div>
+          <div class="section-sub">حدد كل إنجاز سويته، ثم اضغط تأكيد بالأسفل</div>
+          <div id="dailyAchievementsList"></div>
+        </div>
+
+        <div class="section-card">
+          <div class="section-title">📅 إنجاز الأسبوع</div>
+          <div class="section-sub">اختر واحد فقط — يبقى ثابت لين الأحد الجاي</div>
+          <div id="weeklyAchievementsList"></div>
+        </div>
+
+        <div class="section-card">
+          <button type="button" id="confirmAchievementsBtn">✅ تأكيد</button>
+          <p class="error" id="achievementsMsg"></p>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-title">📜 سجل نقاطي</div>
+        <div id="myPointsLogList"></div>
+      </div>
+    </div>
+
+    <!-- 2) الجوائز -->
+    <div class="page-panel" data-page="2">
+      <div class="section-card">
+        <div class="section-title">💰 رصيدك</div>
+        <div class="balance-box">
+          <div class="balance-num" id="rewardsBalance">0</div>
+          <div class="balance-lbl">دينار</div>
+        </div>
+      </div>
+
       <div class="section-card">
         <div class="section-title">🎁 الجوائز المتاحة</div>
-        <div class="section-sub">اجمع رصيدك من الحضور والأنشطة، واستبدله مع المشرف مباشرة</div>
+        <div class="section-sub">اجمع دينارك من الحضور والإنجازات، واستبدله بجوائز حقيقية</div>
         <div id="rewardsList"></div>
       </div>
     </div>
 
-    <!-- 2) المعلومات / الرصيد -->
-    <div class="page-panel" data-page="2">
+    <!-- 3) المعلومات -->
+    <div class="page-panel" data-page="3">
       <div class="section-card">
         <div class="section-title">💰 رصيدي</div>
         <div class="balance-box">
           <div class="balance-num" id="infoBalance">0</div>
-          <div class="balance-lbl">نقطة</div>
+          <div class="balance-lbl">دينار</div>
         </div>
         <button type="button" class="refresh-btn" id="refreshBalanceBtn">🔄 تحديث الرصيد</button>
       </div>
@@ -354,8 +421,8 @@
       </div>
     </div>
 
-    <!-- 3) تابعنا -->
-    <div class="page-panel" data-page="3">
+    <!-- 4) تابعنا -->
+    <div class="page-panel" data-page="4">
       <div class="section-card">
         <div class="section-title">📣 تابعنا</div>
         <div class="section-sub">تابع يومياتنا وتواصل معنا عبر الوسائل التالية</div>
@@ -368,19 +435,20 @@
 
   <div class="bottom-nav">
     <button class="nav-btn active" data-index="0"><span class="nav-ic">🏠</span><span>الرئيسية</span></button>
-    <button class="nav-btn" data-index="1"><span class="nav-ic">🎁</span><span>الجوائز</span></button>
-    <button class="nav-btn" data-index="2"><span class="nav-ic">💰</span><span>المعلومات</span></button>
-    <button class="nav-btn" data-index="3"><span class="nav-ic">📣</span><span>تابعنا</span></button>
+    <button class="nav-btn" data-index="1"><span class="nav-ic">⭐</span><span>نقاطي</span></button>
+    <button class="nav-btn" data-index="2"><span class="nav-ic">🎁</span><span>الجوائز</span></button>
+    <button class="nav-btn" data-index="3"><span class="nav-ic">💰</span><span>المعلومات</span></button>
+    <button class="nav-btn" data-index="4"><span class="nav-ic">📣</span><span>تابعنا</span></button>
   </div>
 </div>
 
 <script>
   /* =========================================================================
      مهم جدًا قبل النشر:
-     1) APPS_SCRIPT_URL -> نفس رابط تطبيق المشرفين بعد إضافة studentLogin و getLeaderboard
+     1) APPS_SCRIPT_URL -> نفس رابط تطبيق المشرفين بعد إضافة كل الإجراءات الجديدة
      2) LOGO_SRC -> الشعار الداخلي بالتطبيق (شاشة الدخول + الهيدر) — منفصل عن أيقونات
         الشاشة الرئيسية (icon-512/192/180.png) المحددة بأعلى الملف
-     3) عدّل REWARDS و CONTACTS بالأسفل ببياناتك الفعلية (رابط واتساب/هاتف/بريد)
+     3) عدّل CONTACTS بالأسفل ببياناتك الفعلية (رابط واتساب/هاتف/بريد)
      ========================================================================= */
   const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzVV1SDLMhie0fMAf2qfu-1wB5AmSvRl3u-T7JDm2wUzaut6I8Lo3NTMpd9P9wE706blA/exec';
   const LOGO_SRC = 'logo.png';
@@ -403,22 +471,96 @@
     { icon: '✉️', title: 'البريد الإلكتروني', value: 'info@example.com', href: 'mailto:info@example.com' }
   ];
 
-  // ====== الجوائز — تُحمّل من الخادم مباشرة (تطبيق المشرفين هو اللي يديرها) ======
+  function renderContacts() {
+    const wrap = document.getElementById('contactList');
+    wrap.innerHTML = CONTACTS.map(c => `
+      <a class="contact-item" href="${c.href}" target="_blank" rel="noopener">
+        <div class="contact-icon">${c.icon}</div>
+        <div>
+          <div class="contact-title">${c.title}</div>
+          <div class="contact-value">${c.value}</div>
+        </div>
+      </a>
+    `).join('');
+  }
+
+  // ====== نافذة تكبير صورة الإعلان ======
+  const imageLightbox = document.getElementById('imageLightbox');
+  function openImageLightbox(url) {
+    document.getElementById('lightboxImg').src = url;
+    imageLightbox.classList.remove('hidden');
+  }
+  imageLightbox.addEventListener('click', () => {
+    imageLightbox.classList.add('hidden');
+    document.getElementById('lightboxImg').src = '';
+  });
+
+  // ====== الإعلانات (صندوق الصفحة الرئيسية) ======
+  function renderAnnouncements(items) {
+    const wrap = document.getElementById('announcementsList');
+    if (!items || !items.length) {
+      wrap.innerHTML = '<p class="lb-empty">لا توجد إعلانات حاليًا</p>';
+      return;
+    }
+    wrap.innerHTML = items.map(a => `
+      <div class="reward-item">
+        <div class="reward-emoji" ${a.imageUrl ? `data-open-image="${a.imageUrl}" style="background-image:url('${a.imageUrl}');background-size:cover;background-position:center;cursor:pointer;"` : ''}>${a.imageUrl ? '' : '📣'}</div>
+        <div style="flex:1;min-width:0;">
+          <div class="reward-name">${a.text}</div>
+          <div class="reward-desc">${a.date || ''}</div>
+        </div>
+      </div>
+    `).join('');
+
+    wrap.querySelectorAll('[data-open-image]').forEach((el) => {
+      el.addEventListener('click', () => openImageLightbox(el.dataset.openImage));
+    });
+  }
+
+  async function loadAnnouncements() {
+    const wrap = document.getElementById('announcementsList');
+    wrap.innerHTML = '<p class="lb-empty">جاري التحميل...</p>';
+    try {
+      const data = await callAppsScript({ action: 'getAnnouncements' });
+      renderAnnouncements(data.success ? data.announcements : []);
+    } catch (_) {
+      wrap.innerHTML = '<p class="lb-empty">تعذر تحميل الإعلانات</p>';
+    }
+  }
+
+  // ====== الجوائز — تُحمّل من الخادم، بآلية شراء فعلية ======
+  let currentStudentBalance = 0;
+
   function renderRewards(rewards) {
     const wrap = document.getElementById('rewardsList');
     if (!rewards || !rewards.length) {
       wrap.innerHTML = '<p class="lb-empty">لا توجد جوائز متاحة حاليًا</p>';
       return;
     }
-    wrap.innerHTML = rewards.map(r => `
-      <div class="reward-item">
-        <div class="reward-emoji" style="${r.imageUrl ? `background-image:url('${r.imageUrl}');background-size:cover;background-position:center;` : ''}">${r.imageUrl ? '' : '🎁'}</div>
-        <div style="flex:1;min-width:0;">
-          <div class="reward-name">${r.name}</div>
+    wrap.innerHTML = rewards.map(r => {
+      let actionHtml;
+      if (!r.available) {
+        actionHtml = '<span class="reward-badge sold-out">نفذت الكمية</span>';
+      } else if (currentStudentBalance < r.price) {
+        actionHtml = '<span class="reward-badge insufficient">الرصيد غير كافي</span>';
+      } else {
+        actionHtml = `<button type="button" class="reward-buy-btn" data-buy-reward="${r.rowIndex}" data-buy-price="${r.price}" data-buy-name="${r.name}">شراء</button>`;
+      }
+      return `
+        <div class="reward-item">
+          <div class="reward-emoji" style="${r.imageUrl ? `background-image:url('${r.imageUrl}');background-size:cover;background-position:center;` : ''}">${r.imageUrl ? '' : '🎁'}</div>
+          <div style="flex:1;min-width:0;">
+            <div class="reward-name">${r.name}</div>
+            <div class="reward-desc">${r.price} دينار</div>
+          </div>
+          ${actionHtml}
         </div>
-        <div class="reward-points">${r.price} نقطة</div>
-      </div>
-    `).join('');
+      `;
+    }).join('');
+
+    wrap.querySelectorAll('[data-buy-reward]').forEach((btn) => {
+      btn.addEventListener('click', () => handleBuyReward(Number(btn.dataset.buyReward), btn.dataset.buyName, Number(btn.dataset.buyPrice)));
+    });
   }
 
   async function loadRewards() {
@@ -432,7 +574,25 @@
     }
   }
 
-  // ====== نصيحة اليوم — تُحمّل من الخادم وتتدور تلقائيًا حسب التاريخ ======
+  async function handleBuyReward(rowIndex, name, price) {
+    if (!confirm('تأكيد شراء "' + name + '" مقابل ' + price + ' دينار؟ سيُخصم فورًا وينتظر موافقة المشرف')) return;
+    const session = getSession();
+    if (!session) return;
+    try {
+      const result = await callAppsScript({ action: 'requestPurchase', studentId: session.id, rewardRowIndex: rowIndex });
+      if (!result.success) { alert(result.error || 'تعذر إتمام الطلب'); return; }
+      currentStudentBalance = result.newBalance;
+      document.getElementById('rewardsBalance').textContent = currentStudentBalance;
+      document.getElementById('infoBalance').textContent = currentStudentBalance;
+      alert('تم إرسال طلب الشراء! بانتظار موافقة المشرف');
+      await loadRewards();
+      await loadMyPointsLog();
+    } catch (_) {
+      alert('حدث خطأ في الاتصال، حاول مرة أخرى');
+    }
+  }
+
+  // ====== نصيحة اليوم — آخر نصيحة مضافة من المشرف ======
   async function loadDailyTip() {
     const el = document.getElementById('dailyTipText');
     try {
@@ -441,19 +601,6 @@
     } catch (_) {
       el.textContent = 'حافظ على حضورك اليومي وتابع جديدنا 🌟';
     }
-  }
-
-  function renderContacts() {
-    const wrap = document.getElementById('contactList');
-    wrap.innerHTML = CONTACTS.map(c => `
-      <a class="contact-item" href="${c.href}" target="_blank" rel="noopener">
-        <div class="contact-icon">${c.icon}</div>
-        <div>
-          <div class="contact-title">${c.title}</div>
-          <div class="contact-value">${c.value}</div>
-        </div>
-      </a>
-    `).join('');
   }
 
   function renderLeaderboard(list) {
@@ -481,6 +628,122 @@
       renderLeaderboard(data.leaderboard);
     } catch (_) {
       wrap.innerHTML = '<p class="lb-empty">تعذر تحميل الترتيب</p>';
+    }
+  }
+
+  // ====== نقاطي — الإنجازات (مقفلة إلا بعد حضور مسائي + بين 4 عصرًا ومنتصف الليل) ======
+  function renderDailyAchievements(daily) {
+    const wrap = document.getElementById('dailyAchievementsList');
+    wrap.innerHTML = daily.map((a) => `
+      <label class="achievement-row ${a.done ? 'done' : ''}">
+        <input type="checkbox" class="achievement-checkbox" data-daily-key="${a.key}" ${a.done ? 'checked disabled' : ''}>
+        <span class="achievement-label">${a.label}${a.done ? ' (تم اليوم ✅)' : ''}</span>
+        <span class="achievement-points">+${a.points}</span>
+      </label>
+    `).join('');
+  }
+
+  function renderWeeklyAchievements(weekly, chosenKey) {
+    const wrap = document.getElementById('weeklyAchievementsList');
+    if (chosenKey) {
+      const chosen = weekly.find((w) => w.key === chosenKey);
+      wrap.innerHTML = `<div class="achievement-row done"><span class="achievement-label">✅ اخترت هذا الأسبوع: ${chosen ? chosen.label : chosenKey}</span></div>`;
+      return;
+    }
+    wrap.innerHTML = weekly.map((a) => `
+      <label class="achievement-row">
+        <input type="radio" name="weeklyAchievement" class="achievement-checkbox" value="${a.key}">
+        <span class="achievement-label">${a.label}</span>
+        <span class="achievement-points">+${a.points}</span>
+      </label>
+    `).join('');
+  }
+
+  async function loadAchievements() {
+    const session = getSession();
+    if (!session) return;
+    try {
+      const data = await callAppsScript({ action: 'getAchievementsStatus', id: session.id });
+      if (!data.success) return;
+
+      if (!data.allowed) {
+        document.getElementById('achievementsLockedCard').style.display = 'block';
+        document.getElementById('achievementsContent').style.display = 'none';
+        document.getElementById('achievementsLockedReason').textContent = data.reason;
+        return;
+      }
+
+      document.getElementById('achievementsLockedCard').style.display = 'none';
+      document.getElementById('achievementsContent').style.display = 'block';
+      renderDailyAchievements(data.daily);
+      renderWeeklyAchievements(data.weekly, data.weeklyChosen);
+    } catch (_) {
+      // تجاهل بصمت — السجل والصفحات الثانية تبقى تعمل
+    }
+  }
+
+  document.getElementById('confirmAchievementsBtn').addEventListener('click', async () => {
+    const session = getSession();
+    if (!session) return;
+
+    const dailyKeys = Array.from(document.querySelectorAll('.achievement-checkbox[data-daily-key]:checked')).map((el) => el.dataset.dailyKey);
+    const weeklyEl = document.querySelector('input[name="weeklyAchievement"]:checked');
+    const weeklyKey = weeklyEl ? weeklyEl.value : null;
+    const msgEl = document.getElementById('achievementsMsg');
+
+    if (!dailyKeys.length && !weeklyKey) {
+      msgEl.style.color = 'var(--error)';
+      msgEl.textContent = 'اختر إنجاز واحد على الأقل';
+      return;
+    }
+
+    const btn = document.getElementById('confirmAchievementsBtn');
+    btn.disabled = true; btn.textContent = 'جاري التأكيد...'; msgEl.textContent = '';
+
+    try {
+      const result = await callAppsScript({ action: 'submitAchievements', id: session.id, dailyKeys: dailyKeys, weeklyKey: weeklyKey });
+      if (result.success) {
+        msgEl.style.color = 'var(--success)';
+        msgEl.textContent = result.pointsAdded > 0
+          ? ('✅ تم تسجيل إنجازاتك! حصلت على ' + result.pointsAdded + ' دينار')
+          : 'تم — لا توجد إنجازات جديدة لإضافتها';
+        await loadAchievements();
+        await loadMyPointsLog();
+        const fresh = await studentLogin(session.id, session.pw);
+        if (fresh.success) populateStudentData(fresh);
+      } else {
+        msgEl.style.color = 'var(--error)';
+        msgEl.textContent = result.error || 'تعذر التسجيل';
+      }
+    } catch (_) {
+      msgEl.style.color = 'var(--error)';
+      msgEl.textContent = 'حدث خطأ في الاتصال';
+    } finally {
+      btn.disabled = false; btn.textContent = '✅ تأكيد';
+    }
+  });
+
+  // ====== سجل نقاطي ======
+  async function loadMyPointsLog() {
+    const session = getSession();
+    if (!session) return;
+    const wrap = document.getElementById('myPointsLogList');
+    wrap.innerHTML = '<p class="lb-empty">جاري التحميل...</p>';
+    try {
+      const data = await callAppsScript({ action: 'getPointsLog', id: session.id });
+      const log = data.success ? data.log : [];
+      if (!log.length) { wrap.innerHTML = '<p class="lb-empty">لا توجد عمليات مسجلة بعد</p>'; return; }
+      wrap.innerHTML = log.map((entry) => `
+        <div class="log-row">
+          <div>
+            <div class="log-reason">${entry.reason}</div>
+            <div class="log-date">${entry.date}</div>
+          </div>
+          <span class="log-amount" style="color:${entry.amount > 0 ? 'var(--success)' : 'var(--error)'}">${entry.amount > 0 ? '+' : ''}${entry.amount}</span>
+        </div>
+      `).join('');
+    } catch (_) {
+      wrap.innerHTML = '<p class="lb-empty">تعذر تحميل السجل</p>';
     }
   }
 
@@ -533,14 +796,19 @@
     appView.classList.remove('hidden');
     populateStudentData(data);
     resetPagesToHome();
+    loadAnnouncements();
     loadLeaderboard();
     loadRewards();
     loadDailyTip();
+    loadAchievements();
+    loadMyPointsLog();
   }
 
   function populateStudentData(data) {
-    document.getElementById('homeWelcome').textContent = 'أهلًا بك، ' + data.name + ' ✨';
+    document.getElementById('headerWelcome').textContent = 'أهلًا بك، ' + data.name + ' ✨';
+    currentStudentBalance = data.balance;
     document.getElementById('infoBalance').textContent = data.balance;
+    document.getElementById('rewardsBalance').textContent = data.balance;
     document.getElementById('infoName').textContent = data.name;
     document.getElementById('infoStage').textContent = data.stage;
     document.getElementById('infoId').textContent = data.id;
@@ -563,7 +831,7 @@
   let currentIndex = 0;
 
   // ترتيب الأيقونات بالقائمة السفلية من اليمين لليسار (نفس ترتيب DOM بصفحة RTL):
-  // 0=الرئيسية (أقصى اليمين) ... 3=تابعنا (أقصى اليسار)
+  // 0=الرئيسية (أقصى اليمين) ... 4=تابعنا (أقصى اليسار)
   // فهرس أكبر = الأيقونة لجهة اليسار، فهرس أصغر = الأيقونة لجهة اليمين
   function goToPage(newIndex) {
     if (newIndex === currentIndex || !panels[newIndex]) return;
@@ -625,6 +893,7 @@
       const data = await studentLogin(session.id, session.pw);
       if (data.success) {
         populateStudentData(data);
+        await loadRewards();
       }
     } catch (_) {
       // تجاهل بصمت — يحافظ على آخر رصيد معروض
