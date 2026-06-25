@@ -239,16 +239,23 @@
   .log-date{color:var(--text-muted);font-size:.74rem;margin-top:2px;}
   .log-amount{font-family:'Baloo Bhaijaan 2', sans-serif;font-weight:800;flex-shrink:0;font-size:.95rem;}
 
-  /* تابعنا */
-  .contact-item{
-    display:flex;align-items:center;gap:14px;padding:14px;border-radius:18px;
-    background:#FBFAFD;border:2px solid #EFEAF8;margin-bottom:12px;text-decoration:none;color:inherit;
+  /* تابعنا — سناب شات فقط، متمركز بمنتصف الصفحة */
+  .snap-only-card{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;min-height:62vh;
   }
-  .contact-icon{font-size:1.5rem;width:46px;height:46px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
-    background:#fff;border-radius:14px;border:2px solid #EFEAF8;}
-  .contact-title{font-weight:800;color:var(--indigo);font-size:.92rem;}
-  .contact-value{font-size:.82rem;color:var(--text-muted);margin-top:2px;}
-  .logout-btn{background:#FBE9ED;color:var(--error);box-shadow:none;margin-top:8px;}
+  .snap-link{text-decoration:none;}
+  .snap-icon-circle{
+    width:118px;height:118px;border-radius:50%;background:#FFFC00;
+    display:flex;align-items:center;justify-content:center;font-size:3.1rem;
+    box-shadow:0 16px 38px -10px rgba(0,0,0,.28);transition:transform .15s ease;
+  }
+  .snap-icon-circle:active{transform:scale(.95);}
+  .snap-caption{
+    font-family:'Baloo Bhaijaan 2', sans-serif;font-weight:700;font-size:1.15rem;
+    color:var(--indigo);margin-top:20px;
+  }
+  .logout-btn{background:#FBE9ED;color:var(--error);box-shadow:none;margin-top:34px;}
 
   /* القائمة السفلية */
   .bottom-nav{
@@ -436,10 +443,11 @@
 
     <!-- 4) تابعنا -->
     <div class="page-panel" data-page="4">
-      <div class="section-card">
-        <div class="section-title">📣 تابعنا</div>
-        <div class="section-sub">تابع يومياتنا وتواصل معنا عبر الوسائل التالية</div>
-        <div id="contactList"></div>
+      <div class="section-card snap-only-card">
+        <a class="snap-link" href="https://www.snapchat.com/add/tawnie.raka38?share_id=aAy5gENBzsI&locale=en-GB" target="_blank" rel="noopener">
+          <div class="snap-icon-circle">👻</div>
+        </a>
+        <div class="snap-caption">تابع يوميات هواية ✨</div>
         <button type="button" class="logout-btn" id="logoutBtn">🚪 تسجيل الخروج</button>
       </div>
     </div>
@@ -476,26 +484,6 @@
     });
   }
 
-  // ====== بيانات تواصل ثابتة (placeholder) — عدّلها كما تحب ======
-  const CONTACTS = [
-    { icon: '👻', title: 'سناب هواية', value: 'تابع يومياتنا في سناب هواية', href: 'https://www.snapchat.com/add/tawnie.raka38?share_id=aAy5gENBzsI&locale=en-GB' },
-    { icon: '📱', title: 'واتساب', value: '05XXXXXXXX', href: 'https://wa.me/9665XXXXXXXX' },
-    { icon: '☎️', title: 'الهاتف', value: '05XXXXXXXX', href: 'tel:05XXXXXXXX' },
-    { icon: '✉️', title: 'البريد الإلكتروني', value: 'info@example.com', href: 'mailto:info@example.com' }
-  ];
-
-  function renderContacts() {
-    const wrap = document.getElementById('contactList');
-    wrap.innerHTML = CONTACTS.map(c => `
-      <a class="contact-item" href="${c.href}" target="_blank" rel="noopener">
-        <div class="contact-icon">${c.icon}</div>
-        <div>
-          <div class="contact-title">${c.title}</div>
-          <div class="contact-value">${c.value}</div>
-        </div>
-      </a>
-    `).join('');
-  }
 
   // ====== نافذة تكبير صورة الإعلان ======
   const imageLightbox = document.getElementById('imageLightbox');
@@ -689,7 +677,7 @@
     }
   }
 
-  // ====== نقاطي — الإنجازات (مقفلة إلا بعد حضور مسائي + بين 4 عصرًا ومنتصف الليل) ======
+  // ====== نقاطي — الإنجازات (مقفلة إلا بعد حضور مسائي + من 3:30 عصرًا لين 3 عصرًا اليوم التالي) ======
   function renderDailyAchievements(daily) {
     const wrap = document.getElementById('dailyAchievementsList');
     wrap.innerHTML = daily.map((a) => `
@@ -1050,7 +1038,6 @@
 
   // ====== التحقق التلقائي عند فتح التطبيق ======
   async function init() {
-    renderContacts();
     showLoading();
 
     // 1) لو فُتح التطبيق من رابط الباركود (id & pw بالرابط) -> دخول تلقائي
