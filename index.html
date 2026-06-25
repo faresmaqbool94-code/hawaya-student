@@ -139,7 +139,7 @@
   .pages-viewport{flex:1;position:relative;overflow:hidden;}
   .page-panel{
     position:absolute;inset:0;overflow-y:auto;
-    padding:18px 16px calc(var(--nav-h) + 24px);
+    padding:18px 16px calc(var(--nav-h) + 70px);
     -webkit-overflow-scrolling:touch;overscroll-behavior-y:auto;
     transform:translateX(100%);transition:transform .4s cubic-bezier(.22,.61,.36,1);display:none;
   }
@@ -266,6 +266,17 @@
   .nav-btn.active{color:var(--indigo);}
   .nav-btn.active .nav-ic{transform:translateY(-2px);}
 
+  /* تأكيد الشراء يطلع جنب زر الشراء مباشرة، بدون أي نافذة منبثقة أو تنبيه عائم */
+  .reward-confirm-row{display:flex;gap:6px;flex-shrink:0;}
+  .reward-confirm-btn{
+    width:auto;padding:8px 14px;font-size:.8rem;border-radius:999px;box-shadow:none;
+    background:linear-gradient(95deg, var(--blue), var(--violet));color:#fff;
+  }
+  .reward-cancel-btn{
+    width:auto;padding:8px 10px;font-size:.8rem;border-radius:999px;box-shadow:none;
+    background:#F3F0FA;color:var(--indigo);
+  }
+
   @media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important;}}
 </style>
 </head>
@@ -381,6 +392,7 @@
       <div class="section-card">
         <div class="section-title">📜 سجل نقاطي</div>
         <div id="myPointsLogList"></div>
+        <button type="button" class="refresh-btn" id="refreshLogBtn">🔄 تحديث السجل</button>
       </div>
     </div>
 
@@ -397,6 +409,7 @@
       <div class="section-card">
         <div class="section-title">🎁 الجوائز المتاحة</div>
         <div class="section-sub">اجمع دينارك من الحضور والإنجازات، واستبدله بجوائز حقيقية</div>
+        <p class="error" id="rewardsMsg" style="color:var(--success);display:none;"></p>
         <div id="rewardsList"></div>
       </div>
     </div>
@@ -544,7 +557,7 @@
       } else if (currentStudentBalance < r.price) {
         actionHtml = '<span class="reward-badge insufficient">الرصيد غير كافي</span>';
       } else {
-        actionHtml = `<button type="button" class="reward-buy-btn" data-buy-reward="${r.rowIndex}" data-buy-price="${r.price}" data-buy-name="${r.name}">شراء</button>`;
+        actionHtml = `<button type="button" class="reward-buy-btn" data-buy-reward="${r.rowIndex}" data-buy-name="${r.name}">شراء</button>`;
       }
       return `
         <div class="reward-item">
@@ -559,7 +572,7 @@
     }).join('');
 
     wrap.querySelectorAll('[data-buy-reward]').forEach((btn) => {
-      btn.addEventListener('click', () => handleBuyReward(Number(btn.dataset.buyReward), btn.dataset.buyName, Number(btn.dataset.buyPrice)));
+      btn.addEventListener('click', () => showInlineConfirm(btn, () => handleBuyReward(Number(btn.dataset.buyReward), btn.dataset.buyName)));
     });
   }
 
@@ -574,22 +587,67 @@
     }
   }
 
-  async function handleBuyReward(rowIndex, name, price) {
-    if (!confirm('تأكيد شراء "' + name + '" مقابل ' + price + ' دينار؟ سيُخصم فورًا وينتظر موافقة المشرف')) return;
-    const session = getSession();
-    if (!session) return;
-    try {
-      const result = await callAppsScript({ action: 'requestPurchase', studentId: session.id, rewardRowIndex: rowIndex });
-      if (!result.success) { alert(result.error || 'تعذر إتمام الطلب'); return; }
-      currentStudentBalance = result.newBalance;
-      document.getElementById('rewardsBalance').textContent = currentStudentBalance;
-      document.getElementById('infoBalance').textContent = currentStudentBalance;
-      alert('تم إرسال طلب الشراء! بانتظار موافقة المشرف');
-      await loadRewards();
-      await loadMyPointsLog();
-    } catch (_) {
-      alert('حدث خطأ في الاتصال، حاول مرة أخرى');
+  // يظهر زر "تأكيد" جنب الزر المضغوط مباشرة بدل أي نافذة منبثقة. ضغط
+  // تأكيد ينفّذ onConfirm (لازم ترجع Promise وترمي خطأ لو فشلت العملية).
+  function showInlineConfirm(triggerBtn, onConfirm) {
+    if (triggerBtn.dataset.confirming === '1') return;
+    triggerBtn.dataset.confirming = '1';
+    triggerBtn.style.display = 'none';
+
+    const confirmBtn = document.createElement('button');
+    confirmBtn.type = 'button';
+    confirmBtn.className = 'reward-confirm-btn';
+    confirmBtn.textContent = 'تأكيد';
+
+    const cancelBtn = document.createElement('button');
+    cancelBtn.type = 'button';
+    cancelBtn.className = 'reward-cancel-btn';
+    cancelBtn.textContent = '✖';
+
+    function cleanup() {
+      confirmBtn.remove();
+      cancelBtn.remove();
+      triggerBtn.style.display = '';
+      delete triggerBtn.dataset.confirming;
     }
+
+    confirmBtn.addEventListener('click', async () => {
+      confirmBtn.disabled = true;
+      confirmBtn.textContent = '...';
+      try {
+        await onConfirm();
+        // العملية نجحت — القائمة نفسها بتتحدث وتستبدل هذا الصف بالكامل
+      } catch (err) {
+        confirmBtn.disabled = false;
+        confirmBtn.textContent = (err && err.message) ? err.message : 'فشل، حاول مجددًا';
+        setTimeout(cleanup, 2200);
+        return;
+      }
+      cleanup();
+    });
+    cancelBtn.addEventListener('click', cleanup);
+
+    triggerBtn.insertAdjacentElement('afterend', confirmBtn);
+    confirmBtn.insertAdjacentElement('afterend', cancelBtn);
+  }
+
+  async function handleBuyReward(rowIndex, name) {
+    const session = getSession();
+    if (!session) throw new Error('سجّل دخولك من جديد');
+
+    const result = await callAppsScript({ action: 'requestPurchase', studentId: session.id, rewardRowIndex: rowIndex });
+    if (!result.success) throw new Error(result.error || 'تعذر إتمام الطلب');
+
+    currentStudentBalance = result.newBalance;
+    document.getElementById('rewardsBalance').textContent = currentStudentBalance;
+    document.getElementById('infoBalance').textContent = currentStudentBalance;
+
+    const msgEl = document.getElementById('rewardsMsg');
+    msgEl.textContent = '🌟 تم طلب "' + name + '"! توجه إلى البنك لاستلام الجائزة';
+    msgEl.style.display = 'block';
+
+    await loadRewards();
+    await loadMyPointsLog();
   }
 
   // ====== نصيحة اليوم — آخر نصيحة مضافة من المشرف ======
@@ -746,6 +804,13 @@
       wrap.innerHTML = '<p class="lb-empty">تعذر تحميل السجل</p>';
     }
   }
+
+  document.getElementById('refreshLogBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('refreshLogBtn');
+    btn.disabled = true; btn.textContent = '...جاري التحديث';
+    await loadMyPointsLog();
+    btn.disabled = false; btn.textContent = '🔄 تحديث السجل';
+  });
 
   // ====== استدعاء الخادم ======
   async function callAppsScript(payload) {
