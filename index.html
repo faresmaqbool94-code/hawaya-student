@@ -944,7 +944,16 @@
   }
 
   navButtons.forEach((btn) => {
-    btn.addEventListener('click', () => goToPage(Number(btn.dataset.index)));
+    btn.addEventListener('click', () => {
+      const idx = Number(btn.dataset.index);
+      goToPage(idx);
+      // تبويب "نقاطي" (index 1) يحتاج فحص الحالة من جديد كل مرة يُفتح، عشان
+      // ينعكس فورًا أي حضور سُجّل بعد ما الطالب فتح التطبيق (باركود أو يدوي)
+      if (idx === 1) {
+        loadAchievements();
+        loadMyPointsLog();
+      }
+    });
   });
 
   // ====== تحديث الرصيد والمركز يدويًا ======
