@@ -269,9 +269,9 @@
     background:none;border:none;box-shadow:none;color:var(--text-muted);width:auto;padding:8px 0;
     font-family:'Almarai', sans-serif;font-size:.62rem;font-weight:700;cursor:pointer;border-radius:0;
   }
-  .nav-btn .nav-ic{font-size:1.25rem;transition:transform .2s ease;}
+  .nav-btn .nav-ic-img{width:27px;height:27px;object-fit:contain;transition:transform .2s ease, opacity .2s ease;opacity:.5;}
+  .nav-btn.active .nav-ic-img{transform:translateY(-2px);opacity:1;}
   .nav-btn.active{color:var(--indigo);}
-  .nav-btn.active .nav-ic{transform:translateY(-2px);}
 
   /* تأكيد الشراء يطلع جنب زر الشراء مباشرة، بدون أي نافذة منبثقة أو تنبيه عائم */
   .reward-confirm-row{display:flex;gap:6px;flex-shrink:0;}
@@ -455,11 +455,11 @@
   </div>
 
   <div class="bottom-nav">
-    <button class="nav-btn active" data-index="0"><span class="nav-ic">🏠</span><span>الرئيسية</span></button>
-    <button class="nav-btn" data-index="1"><span class="nav-ic">⭐</span><span>نقاطي</span></button>
-    <button class="nav-btn" data-index="2"><span class="nav-ic">🎁</span><span>الجوائز</span></button>
-    <button class="nav-btn" data-index="3"><span class="nav-ic">💰</span><span>المعلومات</span></button>
-    <button class="nav-btn" data-index="4"><span class="nav-ic">📣</span><span>تابعنا</span></button>
+    <button class="nav-btn active" data-index="0" aria-label="الرئيسية"><img class="nav-ic-img" src="nav-home.png" alt=""></button>
+    <button class="nav-btn" data-index="1" aria-label="نقاطي"><img class="nav-ic-img" src="nav-points.png" alt=""></button>
+    <button class="nav-btn" data-index="2" aria-label="الجوائز"><img class="nav-ic-img" src="nav-rewards.png" alt=""></button>
+    <button class="nav-btn" data-index="3" aria-label="المعلومات"><img class="nav-ic-img" src="nav-info.png" alt=""></button>
+    <button class="nav-btn" data-index="4" aria-label="تابعنا"><img class="nav-ic-img" src="nav-follow.png" alt=""></button>
   </div>
 </div>
 
