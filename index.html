@@ -181,6 +181,15 @@
   .lb-empty{color:var(--text-muted);font-size:.82rem;padding:6px 2px;}
 
   /* الإعلانات والجوائز — صف عام */
+  /* الإعلان الأحدث — يطلع بحجم أكبر وضوحًا، يضغط عليه لفتح الصورة كاملة */
+  .announcement-featured{
+    border-radius:18px;overflow:hidden;margin-bottom:14px;background:#FBFAFD;border:2px solid #EFEAF8;
+  }
+  .announcement-featured-img{
+    width:100%;height:170px;background-size:cover;background-position:center;cursor:pointer;
+  }
+  .announcement-featured-body{padding:14px 16px;}
+
   .reward-item{
     display:flex;align-items:center;gap:14px;padding:14px;border-radius:18px;
     background:#FBFAFD;border:2px solid #EFEAF8;margin-bottom:12px;
@@ -377,6 +386,14 @@
         </div>
       </div>
 
+      <!-- الصفوف الأولى-الرابعة: للعرض فقط، المعلم يضيف النقاط مباشرة من شاشته -->
+      <div class="section-card" id="achievementsTeacherManagedCard" style="display:none;">
+        <div class="locked-box">
+          <div class="ic">👩‍🏫</div>
+          <div style="font-weight:800;color:var(--indigo);font-size:1.05rem;">تُضاف النقاط من المعلم في وقت البرنامج</div>
+        </div>
+      </div>
+
       <div id="achievementsContent" style="display:none;">
         <div class="section-card">
           <div class="section-title">⭐ إنجازات اليوم</div>
@@ -503,7 +520,20 @@
       wrap.innerHTML = '<p class="lb-empty">لا توجد إعلانات حاليًا</p>';
       return;
     }
-    wrap.innerHTML = items.map(a => `
+
+    const [featured, ...rest] = items;
+
+    let html = `
+      <div class="announcement-featured">
+        ${featured.imageUrl ? `<div class="announcement-featured-img" data-open-image="${featured.imageUrl}" style="background-image:url('${featured.imageUrl}')"></div>` : ''}
+        <div class="announcement-featured-body">
+          <div class="reward-name">${featured.text}</div>
+          <div class="reward-desc">${featured.date || ''}</div>
+        </div>
+      </div>
+    `;
+
+    html += rest.map(a => `
       <div class="reward-item">
         <div class="reward-emoji" ${a.imageUrl ? `data-open-image="${a.imageUrl}" style="background-image:url('${a.imageUrl}');background-size:cover;background-position:center;cursor:pointer;"` : ''}>${a.imageUrl ? '' : '📣'}</div>
         <div style="flex:1;min-width:0;">
@@ -512,6 +542,8 @@
         </div>
       </div>
     `).join('');
+
+    wrap.innerHTML = html;
 
     wrap.querySelectorAll('[data-open-image]').forEach((el) => {
       el.addEventListener('click', () => openImageLightbox(el.dataset.openImage));
@@ -705,9 +737,22 @@
     `).join('');
   }
 
+  const YOUNG_GRADES = ['أول ابتدائي', 'ثاني ابتدائي', 'ثالث ابتدائي', 'رابع ابتدائي'];
+  let currentStudentStage = '';
+
   async function loadAchievements() {
     const session = getSession();
     if (!session) return;
+
+    // الصفوف الأولى-الرابعة: نقاطهم يضيفها المعلم مباشرة من شاشته، فلا تحتاج
+    // قفل بالوقت ولا أي تفاعل هنا — فقط رسالة توضيحية + السجل بالأسفل كالعادة
+    if (YOUNG_GRADES.indexOf(currentStudentStage) !== -1) {
+      document.getElementById('achievementsLockedCard').style.display = 'none';
+      document.getElementById('achievementsContent').style.display = 'none';
+      document.getElementById('achievementsTeacherManagedCard').style.display = 'block';
+      return;
+    }
+
     try {
       const data = await callAppsScript({ action: 'getAchievementsStatus', id: session.id });
       if (!data.success) return;
@@ -859,6 +904,7 @@
 
   function populateStudentData(data) {
     document.getElementById('headerWelcome').textContent = 'أهلًا بك، ' + data.name + ' ✨';
+    currentStudentStage = data.stage;
     currentStudentBalance = data.balance;
     document.getElementById('infoBalance').textContent = data.balance;
     document.getElementById('rewardsBalance').textContent = data.balance;
