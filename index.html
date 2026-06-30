@@ -209,6 +209,28 @@
   .reward-badge.sold-out{background:#FBE9ED;color:var(--error);}
   .reward-badge.insufficient{background:#F3F0FA;color:var(--text-muted);}
 
+  /* بطاقة بيانات الطالب — نفس تصميم بطاقة التسجيل بدون باركود */
+  .student-id-card{
+    position:relative;border-radius:16px;overflow:hidden;
+    background:linear-gradient(135deg, #1A1430, var(--indigo) 40%, var(--violet) 75%, var(--pink) 110%);
+    padding:16px;margin-top:4px;
+  }
+  .student-id-card-inner{display:flex;align-items:flex-start;gap:12px;position:relative;z-index:1;}
+  .student-id-photo{
+    width:80px;height:80px;border-radius:14px;flex-shrink:0;
+    background-size:cover;background-position:center;background-color:rgba(255,255,255,.12);
+    border:2px solid rgba(255,255,255,.55);
+    display:flex;align-items:center;justify-content:center;font-size:2rem;color:#fff;
+  }
+  .student-id-info{flex:1;min-width:0;text-align:right;}
+  .student-id-logo{height:38px;width:auto;display:block;margin-bottom:6px;border-radius:8px;}
+  .student-id-name{font-weight:800;font-size:1.1rem;color:#fff;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .student-id-stage{font-size:.82rem;font-weight:800;color:rgba(255,255,255,.7);margin-bottom:8px;}
+  .student-id-pairs{display:flex;gap:16px;flex-wrap:wrap;}
+  .student-id-pair{display:flex;flex-direction:column;gap:1px;}
+  .student-id-label{font-size:.62rem;color:rgba(255,255,255,.6);font-weight:700;}
+  .student-id-value{font-size:.9rem;font-weight:800;color:#fff;}
+
   /* المعلومات / الرصيد */
   .balance-box{text-align:center;padding:10px 0 4px;}
   .balance-num{font-family:'Baloo Bhaijaan 2', sans-serif;font-weight:800;font-size:3rem;color:var(--indigo);line-height:1;}
@@ -456,16 +478,32 @@
       </div>
       <div class="section-card">
         <div class="section-title">بياناتي</div>
-        <div class="info-photo-wrap" style="position:relative;flex-direction:column;align-items:center;">
-          <div id="infoAvatar" class="info-avatar">🧒</div>
-          <button type="button" id="changePhotoBtn" class="btn-secondary" style="width:auto;margin-top:10px;padding:8px 18px;font-size:.8rem;">📷 تغيير الصورة</button>
-          <input type="file" id="changePhotoInput" accept="image/*" class="hidden">
-          <p class="error" id="changePhotoMsg" style="margin-top:8px;"></p>
+        <div class="student-id-card" id="studentIdCard">
+          <div class="student-id-card-bg"></div>
+          <div class="student-id-card-inner">
+            <div class="student-id-photo" id="infoAvatar">🧒</div>
+            <div class="student-id-info">
+              <img class="student-id-logo app-logo" alt="هواية">
+              <div class="student-id-name" id="infoName"></div>
+              <div class="student-id-stage" id="infoStage"></div>
+              <div class="student-id-pairs">
+                <div class="student-id-pair">
+                  <span class="student-id-label">رقم الطالب</span>
+                  <span class="student-id-value" id="infoId"></span>
+                </div>
+                <div class="student-id-pair">
+                  <span class="student-id-label">المركز</span>
+                  <span class="student-id-value" id="infoRank"></span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="info-row"><span class="k">الاسم</span><span class="v" id="infoName"></span></div>
-        <div class="info-row"><span class="k">المرحلة الدراسية</span><span class="v" id="infoStage"></span></div>
-        <div class="info-row"><span class="k">رقم الطالب</span><span class="v" id="infoId"></span></div>
-        <div class="info-row"><span class="k">مركزك بين الطلاب</span><span class="v" id="infoRank"></span></div>
+        <div style="display:flex;justify-content:center;margin-top:12px;">
+          <button type="button" id="changePhotoBtn" class="btn-secondary" style="width:auto;padding:8px 18px;font-size:.8rem;">📷 تغيير الصورة</button>
+          <input type="file" id="changePhotoInput" accept="image/*" class="hidden">
+        </div>
+        <p class="error" id="changePhotoMsg" style="text-align:center;margin-top:8px;"></p>
       </div>
     </div>
 
@@ -1005,7 +1043,6 @@
     document.getElementById('infoName').textContent = data.name;
     document.getElementById('infoStage').textContent = data.stage;
     document.getElementById('infoId').textContent = data.id;
-    document.getElementById('infoRank').textContent = data.rank ? ('المركز ' + data.rank) : 'غير متوفر بعد';
     document.getElementById('lbYourRank').textContent = data.rank ? ('· مركزك #' + data.rank) : '';
 
     const infoAvatar = document.getElementById('infoAvatar');
@@ -1016,6 +1053,7 @@
       infoAvatar.style.backgroundImage = '';
       infoAvatar.textContent = '🧒';
     }
+    document.getElementById('infoRank').textContent = data.rank ? ('المركز ' + data.rank) : '—';
 
     // باركود الحضور الشخصي — نفس الرابط المشفّر ببطاقته الأصلية بالضبط
     const session = getSession();
