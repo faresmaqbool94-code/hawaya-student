@@ -15,6 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@600;700;800&family=Almarai:wght@400;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
   :root{
     --blue:#2F6FBF;
@@ -448,9 +449,19 @@
         </div>
         <button type="button" class="refresh-btn" id="refreshBalanceBtn">🔄 تحديث الرصيد</button>
       </div>
+      <div class="section-card" style="text-align:center;">
+        <div class="section-title">📷 باركود الحضور</div>
+        <div class="section-sub">صوّر هذا الباركود بمحطة تسجيل الحضور — يعمل تمامًا مثل باركود بطاقتك</div>
+        <div id="myAttendanceQr" style="display:flex;justify-content:center;margin:6px 0;"></div>
+      </div>
       <div class="section-card">
         <div class="section-title">بياناتي</div>
-        <div class="info-photo-wrap"><div id="infoAvatar" class="info-avatar">🧒</div></div>
+        <div class="info-photo-wrap" style="position:relative;flex-direction:column;align-items:center;">
+          <div id="infoAvatar" class="info-avatar">🧒</div>
+          <button type="button" id="changePhotoBtn" class="btn-secondary" style="width:auto;margin-top:10px;padding:8px 18px;font-size:.8rem;">📷 تغيير الصورة</button>
+          <input type="file" id="changePhotoInput" accept="image/*" class="hidden">
+          <p class="error" id="changePhotoMsg" style="margin-top:8px;"></p>
+        </div>
         <div class="info-row"><span class="k">الاسم</span><span class="v" id="infoName"></span></div>
         <div class="info-row"><span class="k">المرحلة الدراسية</span><span class="v" id="infoStage"></span></div>
         <div class="info-row"><span class="k">رقم الطالب</span><span class="v" id="infoId"></span></div>
@@ -489,7 +500,11 @@
      3) عدّل CONTACTS بالأسفل ببياناتك الفعلية (رابط واتساب/هاتف/بريد)
      ========================================================================= */
   const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzVV1SDLMhie0fMAf2qfu-1wB5AmSvRl3u-T7JDm2wUzaut6I8Lo3NTMpd9P9wE706blA/exec';
+  const STUDENT_APP_BASE_URL = 'https://faresmaqbool94-code.github.io/hawaya-student/';
   const LOGO_SRC = 'logo.png';
+  const CLOUDINARY_CLOUD_NAME = 'dhv0ypi5d';
+  const CLOUDINARY_UPLOAD_PRESET = 'hawaya_upload';
+  const CLOUDINARY_UPLOAD_URL = 'https://api.cloudinary.com/v1_1/' + CLOUDINARY_CLOUD_NAME + '/image/upload';
   const SESSION_KEY = 'hawaya_student_session';
 
   document.querySelectorAll('.app-logo').forEach((img) => { img.src = LOGO_SRC; });
@@ -856,6 +871,85 @@
     return res.json();
   }
 
+  // ===== تغيير الصورة الشخصية =====
+  function compressImage(file, maxDim, quality) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const img = new Image();
+        img.onload = () => {
+          let { width, height } = img;
+          if (width > height && width > maxDim) { height = Math.round(height * (maxDim / width)); width = maxDim; }
+          else if (height >= width && height > maxDim) { width = Math.round(width * (maxDim / height)); height = maxDim; }
+          const canvas = document.createElement('canvas');
+          canvas.width = width; canvas.height = height;
+          canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', quality).split(',')[1]);
+        };
+        img.onerror = reject;
+        img.src = ev.target.result;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function uploadToCloudinary(base64Data, folder, mimeType) {
+    const dataUrl = 'data:' + mimeType + ';base64,' + base64Data;
+    const fd = new FormData();
+    fd.append('file', dataUrl);
+    fd.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+    fd.append('folder', folder);
+
+    const res = await fetch(CLOUDINARY_UPLOAD_URL, { method: 'POST', body: fd });
+    const json = await res.json();
+    if (!res.ok || !json.secure_url) {
+      throw new Error(json.error ? json.error.message : 'فشل رفع الصورة');
+    }
+    return json.secure_url;
+  }
+
+  document.getElementById('changePhotoBtn').addEventListener('click', () => {
+    document.getElementById('changePhotoInput').click();
+  });
+
+  document.getElementById('changePhotoInput').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const session = getSession();
+    if (!session) return;
+
+    const msgEl = document.getElementById('changePhotoMsg');
+    const btn = document.getElementById('changePhotoBtn');
+    msgEl.style.color = 'var(--error)';
+    msgEl.textContent = '';
+    btn.disabled = true;
+    btn.textContent = 'جاري الرفع...';
+
+    try {
+      const compressed = await compressImage(file, 800, 0.75);
+      const imageUrl = await uploadToCloudinary(compressed, 'student-photos', 'image/jpeg');
+
+      const result = await callAppsScript({ action: 'updateStudentPhoto', id: session.id, password: session.pw, imageUrl: imageUrl });
+      if (!result.success) { msgEl.textContent = result.error || 'تعذر تحديث الصورة'; return; }
+
+      const infoAvatar = document.getElementById('infoAvatar');
+      infoAvatar.style.backgroundImage = "url('" + imageUrl + "')";
+      infoAvatar.textContent = '';
+
+      msgEl.style.color = 'var(--success)';
+      msgEl.textContent = '✅ تم تحديث صورتك';
+      setTimeout(() => { msgEl.textContent = ''; }, 2500);
+    } catch (err) {
+      msgEl.textContent = 'تعذر رفع الصورة، حاول مرة أخرى';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '📷 تغيير الصورة';
+      e.target.value = ''; // يسمح باختيار نفس الملف مرة ثانية لو احتاج
+    }
+  });
+
   async function studentLogin(id, pw) {
     return callAppsScript({ action: 'studentLogin', id: id, password: pw });
   }
@@ -921,6 +1015,15 @@
     } else {
       infoAvatar.style.backgroundImage = '';
       infoAvatar.textContent = '🧒';
+    }
+
+    // باركود الحضور الشخصي — نفس الرابط المشفّر ببطاقته الأصلية بالضبط
+    const session = getSession();
+    const qrWrap = document.getElementById('myAttendanceQr');
+    if (session && session.pw && qrWrap) {
+      qrWrap.innerHTML = '';
+      const loginLink = STUDENT_APP_BASE_URL + '?id=' + data.id + '&pw=' + session.pw;
+      new QRCode(qrWrap, { text: loginLink, width: 160, height: 160, colorDark: '#15101F', colorLight: '#ffffff' });
     }
   }
 
