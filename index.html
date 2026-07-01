@@ -209,27 +209,37 @@
   .reward-badge.sold-out{background:#FBE9ED;color:var(--error);}
   .reward-badge.insufficient{background:#F3F0FA;color:var(--text-muted);}
 
-  /* بطاقة بيانات الطالب — نفس تصميم بطاقة التسجيل بدون باركود */
+  /* بطاقة بيانات الطالب — تصميم البطاقة الأصلية */
   .student-id-card{
     position:relative;border-radius:16px;overflow:hidden;
     background:linear-gradient(135deg, #1A1430, var(--indigo) 40%, var(--violet) 75%, var(--pink) 110%);
-    padding:16px;margin-top:4px;
+    padding:16px 18px;margin-top:4px;
   }
-  .student-id-card-inner{display:flex;align-items:flex-start;gap:12px;position:relative;z-index:1;}
+  .student-id-card-inner{
+    display:flex;align-items:stretch;gap:14px;
+    flex-direction:row-reverse; /* صورة يسار، معلومات يمين */
+  }
   .student-id-photo{
-    width:80px;height:80px;border-radius:14px;flex-shrink:0;
+    flex-shrink:0;width:90px;height:90px;border-radius:14px;
     background-size:cover;background-position:center;background-color:rgba(255,255,255,.12);
     border:2px solid rgba(255,255,255,.55);
-    display:flex;align-items:center;justify-content:center;font-size:2rem;color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:2.2rem;color:#fff;
+    align-self:flex-end;
   }
-  .student-id-info{flex:1;min-width:0;text-align:right;}
-  .student-id-logo{height:38px;width:auto;display:block;margin-bottom:6px;border-radius:8px;}
-  .student-id-name{font-weight:800;font-size:1.1rem;color:#fff;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .student-id-stage{font-size:.82rem;font-weight:800;color:rgba(255,255,255,.7);margin-bottom:8px;}
-  .student-id-pairs{display:flex;gap:16px;flex-wrap:wrap;}
-  .student-id-pair{display:flex;flex-direction:column;gap:1px;}
-  .student-id-label{font-size:.62rem;color:rgba(255,255,255,.6);font-weight:700;}
-  .student-id-value{font-size:.9rem;font-weight:800;color:#fff;}
+  .student-id-info{flex:1;min-width:0;text-align:right;display:flex;flex-direction:column;}
+  .student-id-logo{
+    height:42px;width:auto;display:block;margin-bottom:8px;border-radius:8px;
+    align-self:flex-end;
+  }
+  .student-id-name{
+    font-weight:800;font-size:1.15rem;color:#fff;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px;
+  }
+  .student-id-stage{font-size:.82rem;font-weight:800;color:rgba(255,255,255,.65);margin-bottom:10px;}
+  .student-id-pairs{display:flex;gap:18px;}
+  .student-id-pair{display:flex;flex-direction:column;gap:2px;}
+  .student-id-label{font-size:.62rem;color:rgba(255,255,255,.55);font-weight:700;letter-spacing:.3px;}
+  .student-id-value{font-size:.95rem;font-weight:800;color:rgba(255,255,255,.9);}
 
   /* المعلومات / الرصيد */
   .balance-box{text-align:center;padding:10px 0 4px;}
@@ -479,16 +489,15 @@
       <div class="section-card">
         <div class="section-title">بياناتي</div>
         <div class="student-id-card" id="studentIdCard">
-          <div class="student-id-card-bg"></div>
           <div class="student-id-card-inner">
             <div class="student-id-photo" id="infoAvatar">🧒</div>
             <div class="student-id-info">
-              <img class="student-id-logo app-logo" alt="هواية">
+              <img class="student-id-logo" src="png new.png" alt="هواية">
               <div class="student-id-name" id="infoName"></div>
               <div class="student-id-stage" id="infoStage"></div>
               <div class="student-id-pairs">
                 <div class="student-id-pair">
-                  <span class="student-id-label">رقم الطالب</span>
+                  <span class="student-id-label">ID</span>
                   <span class="student-id-value" id="infoId"></span>
                 </div>
                 <div class="student-id-pair">
@@ -1053,7 +1062,7 @@
       infoAvatar.style.backgroundImage = '';
       infoAvatar.textContent = '🧒';
     }
-    document.getElementById('infoRank').textContent = data.rank ? ('المركز ' + data.rank) : '—';
+    document.getElementById('infoRank').textContent = data.rank ? ('#' + data.rank) : '—';
 
     // باركود الحضور الشخصي — نفس الرابط المشفّر ببطاقته الأصلية بالضبط
     const session = getSession();
