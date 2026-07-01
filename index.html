@@ -209,37 +209,36 @@
   .reward-badge.sold-out{background:#FBE9ED;color:var(--error);}
   .reward-badge.insufficient{background:#F3F0FA;color:var(--text-muted);}
 
-  /* بطاقة بيانات الطالب — تصميم البطاقة الأصلية */
+  /* بطاقة بيانات الطالب */
   .student-id-card{
     position:relative;border-radius:16px;overflow:hidden;
     background:linear-gradient(135deg, #1A1430, var(--indigo) 40%, var(--violet) 75%, var(--pink) 110%);
-    padding:16px 18px;margin-top:4px;
+    padding:16px 18px;margin-top:4px;min-height:130px;
+  }
+  .student-id-logo{
+    position:absolute;top:12px;left:14px;
+    height:38px;width:auto;border-radius:8px;
   }
   .student-id-card-inner{
-    display:flex;align-items:stretch;gap:14px;
-    flex-direction:row-reverse; /* صورة يسار، معلومات يمين */
+    display:flex;align-items:flex-start;gap:14px;
+    flex-direction:row-reverse;
   }
   .student-id-photo{
-    flex-shrink:0;width:90px;height:90px;border-radius:14px;
+    flex-shrink:0;width:90px;height:90px;border-radius:14px;margin-top:0;
     background-size:cover;background-position:center;background-color:rgba(255,255,255,.12);
     border:2px solid rgba(255,255,255,.55);
     display:flex;align-items:center;justify-content:center;font-size:2.2rem;color:#fff;
-    align-self:flex-end;
   }
-  .student-id-info{flex:1;min-width:0;text-align:right;display:flex;flex-direction:column;}
-  .student-id-logo{
-    height:42px;width:auto;display:block;margin-bottom:8px;border-radius:8px;
-    align-self:flex-end;
-  }
+  .student-id-info{flex:1;min-width:0;text-align:right;padding-top:4px;}
   .student-id-name{
     font-weight:800;font-size:1.15rem;color:#fff;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px;margin-top:44px;
   }
-  .student-id-stage{font-size:.82rem;font-weight:800;color:rgba(255,255,255,.65);margin-bottom:10px;}
-  .student-id-pairs{display:flex;gap:18px;}
-  .student-id-pair{display:flex;flex-direction:column;gap:2px;}
-  .student-id-label{font-size:.62rem;color:rgba(255,255,255,.55);font-weight:700;letter-spacing:.3px;}
-  .student-id-value{font-size:.95rem;font-weight:800;color:rgba(255,255,255,.9);}
+  .student-id-stage{font-size:.82rem;font-weight:800;color:rgba(255,255,255,.5);margin-bottom:10px;}
+  .student-id-meta{display:flex;gap:16px;align-items:center;}
+  .student-id-id{font-size:.88rem;font-weight:800;color:rgba(255,255,255,.85);}
+  .student-id-id span{font-size:.65rem;font-weight:700;color:rgba(255,255,255,.45);margin-right:3px;}
+  .student-id-rank{font-size:.88rem;font-weight:800;color:rgba(255,255,255,.85);}
 
   /* المعلومات / الرصيد */
   .balance-box{text-align:center;padding:10px 0 4px;}
@@ -489,21 +488,15 @@
       <div class="section-card">
         <div class="section-title">بياناتي</div>
         <div class="student-id-card" id="studentIdCard">
+          <img class="student-id-logo" src="new.png" alt="هواية">
           <div class="student-id-card-inner">
             <div class="student-id-photo" id="infoAvatar">🧒</div>
             <div class="student-id-info">
-              <img class="student-id-logo" src="png new.png" alt="هواية">
               <div class="student-id-name" id="infoName"></div>
               <div class="student-id-stage" id="infoStage"></div>
-              <div class="student-id-pairs">
-                <div class="student-id-pair">
-                  <span class="student-id-label">ID</span>
-                  <span class="student-id-value" id="infoId"></span>
-                </div>
-                <div class="student-id-pair">
-                  <span class="student-id-label">المركز</span>
-                  <span class="student-id-value" id="infoRank"></span>
-                </div>
+              <div class="student-id-meta">
+                <div class="student-id-id"><span>ID</span><span id="infoId"></span></div>
+                <div class="student-id-rank" id="infoRank"></div>
               </div>
             </div>
           </div>
